@@ -26,7 +26,7 @@ if (!dir.exists("output")) dir.create("output")
 # All parameters
 params <- c(
   iter0, rounds0, stcon0, shrpp0, aa0, at0, dt0, da0, sdi0, sdj0, bap0, btp0,
-  ccp0, bsp0, bag0, btg0, ck0, cb0, bs0, cx0, nu0, mu0, p10, gma0
+  ccp0, bsp0, bag0, btg0, ck0, cb0, ths0, cx0, nu0, mu0, p10, gma0
 )
 
 # Hash of functions file
