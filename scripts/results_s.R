@@ -1,4 +1,10 @@
 ################ A file to produce the results for the models ##################
+#
+# This file is a called by `2_results_time.R` to produce time series plots of
+# results from the simulations for each of the varieties listed in the upstream
+# file.
+#
+################################################################################
 
 # Load packages ----------------------------------------------------------------
 pkgs <- list(
@@ -6,7 +12,6 @@ pkgs <- list(
   , "ggpubr"
   , "ggnewscale"
   , "reshape"
-  # , "ggdist"
   , "paletteer"
 )
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()

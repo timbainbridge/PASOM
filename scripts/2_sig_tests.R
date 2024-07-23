@@ -1,10 +1,5 @@
 ############################ Significance tests ################################
 
-# Packages ---------------------------------------------------------------------
-
-pkgs <- c("psych", "openxlsx")
-sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
-
 # Load data --------------------------------------------------------------------
 models <- c("base", paste0("cx", c(15, 1, 5, 0)))
 results <- lapply(

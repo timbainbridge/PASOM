@@ -7,7 +7,7 @@
 # seems at best inelegant. An alternative would be to package parameters into an
 # object and either change parameters to take them from the object or, likely
 # better, use a for loop and assign() to recreate the parameters within the
-# function's environment. This will probably do, however.
+# function's environment. This will do for now, however.
 #
 ################################################################################
 
@@ -90,6 +90,7 @@ fun.a <- function(
         groups$membership[names(groups$membership) %fin% pub]
     ] |> names()
     agents3 <- agents1[agents1$id %fin% share, ]
+    # Step 3: Agents choose to share constructively or toxically ---------------
     if (sum(!share %fin% pub) > 0) {  # Sharers other than original posters
       # Does the info favour the pro- or anti-science position?
       styp0 <- (agents3$U1 > agents3$U0) * 1
@@ -196,7 +197,7 @@ fun.a <- function(
     txshare0 <- rep(0, length(agents1$id))
   }
   
-  # Step 3: Agents Update ------------------------------------------------------
+  # Step 4: Agents Update ------------------------------------------------------
   agentsout <- data.frame(id = agents1$id, row.names = agents1$id)
   agentsout$bs <- agents1$bs + info$aa0 * lmda / ths
   agentsout$as <- agents1$as + info$aa1 * lmda * ths
@@ -227,7 +228,7 @@ fun.a <- function(
     nu
   )
   
-  # Step 4: Agents Disconnect --------------------------------------------------
+  # Step 5: Agents Disconnect --------------------------------------------------
   pt1 <- (agentsout$at1 - 1/3) / (agentsout$Kt1 - 2/3)
   pt0 <- (agentsout$at0 - 1/3) / (agentsout$Kt0 - 2/3)
   pa1 <- (agentsout$aa1 - 1/3) / (agentsout$Ka1 - 2/3)
@@ -293,7 +294,7 @@ fun.a <- function(
     txsh1 <- character()
     txsh0 <- character()
   }
-  # Step 5: Agents form new connections ----------------------------------------
+  # Step 6: Agents form new connections ----------------------------------------
   if (length(pub) > 0) {
     ash1 <- styp[share][styp[share] == "A1"] |> names()
     ash0 <- styp[share][styp[share] == "A0"] |> names()
@@ -531,16 +532,15 @@ fun.b2 <- function(g0, pers0,
     pub11[i] <- out$pub1
     pub10[i] <- out$pub0
     lmda1[, i] <- out$agents$lmda
+    
+    # Steps 5 & 6 continued ----------------------------------------------------
     if (length(out$unfriend) != 0 & (!is.na(out$unfriend)) |> sum() > 0) {
       g <- delete_edges(g, out$unfriend)
     }
     if (length(out$newcon) != 0) {
       g <- add_edges(g, out$newcon)
     }
-    # Let's assume agents want at least 2 connections. In future, this could be
-    # more prominent, representing a friend-recommender algorithms.
-    # Let's also assume they seek out agents with views either similar to theirs
-    # or on the same side of the issue as the direction they're leaning.
+    # Step 7: New connections if < 2 -------------------------------------------
     adv0 <- sapply(adjacent_vertices(g, out$agents$id), length)
     adv <- names(adv0[adv0 <= 1])
     count0 <- 1
@@ -561,8 +561,7 @@ fun.b2 <- function(g0, pers0,
       adv0 <- sapply(adjacent_vertices(g, out$agents$id), length)
       adv <- names(adv0[adv0 <= 1])
     }
-    # It's possible there is an agent with no connections and no suitable
-    # matches from the above. In that case, connect them to a random agent.
+    # Step 8: New connections if none ------------------------------------------
     compon <- components(g)
     while (1 %fin% compon$csize) {
       comord <- compon$csize |> order()

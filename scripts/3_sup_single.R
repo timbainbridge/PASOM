@@ -9,15 +9,14 @@
 # Load packages
 pkgs <- list(
   "igraph"        # For networks
-  , "reshape"     # For melt
-  , "ggplot2"
-  , "ggnewscale"
-  , "ggthemes"
-  , "paletteer"
-  , "gridExtra"
-  , "ggpubr"
+  , "ggplot2"     # For all the figures
+  , "paletteer"   # For the palettes
+  , "ggpubr"      # For ggarrange()
 )
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
+
+# Create object directory (if it doesn't exist
+if (!dir.exists("plots")) dir.create("plots")
 
 # Load objects -----------------------------------------------------------------
 

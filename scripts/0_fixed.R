@@ -9,8 +9,10 @@
 ################################################################################
 
 # Packages ---------------------------------------------------------------------
-pkgs <- "igraph"
-sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
+library(igraph)
+
+# Create obejct directory (if it doesn't exist) --------------------------------
+if (!dir.exists("input")) dir.create("input")
 
 # Load parameters for network creation -----------------------------------------
 source(file.path("scripts", "default_params.R"))
@@ -174,10 +176,9 @@ while (compon$no > 1) {
 # Personality ------------------------------------------------------------------
 
 # Differences in starting priors are set via this 'personality' variable
-# labelled 'i' (for intellect) with higher values leading to high alphas and
-# lower betas and vice versa for low i. This was done so the strength of agents'
-# priors would be similar (rather than sampling randomly for both alpha and
-# beta).
+# labelled 'i' with higher values leading to high alphas and lower betas and
+# vice versa for low i. This was done so the strength of agents' priors would be
+# similar (rather than sampling randomly for both alpha and beta).
 
 set.seed(0)
 # N = n_agent (500)

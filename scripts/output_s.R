@@ -1,4 +1,9 @@
 ################## Generic Script for Interpreting the models ##################
+#
+# This file is called by `1_output.R` and produces outputs for each of the
+# models listed there.
+#
+################################################################################
 
 # Load packages ----------------------------------------------------------------
 pkgs <- list(

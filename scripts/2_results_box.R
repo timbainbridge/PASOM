@@ -6,14 +6,15 @@
 
 # Load packages ----------------------------------------------------------------
 pkgs <- list(
-  "ggplot2"
-  , "ggpubr"
-  , "ggnewscale"
-  , "reshape"
-  , "paletteer"
-  , "igraph"
+  "ggplot2"       # For all the figures
+  , "ggpubr"      # For ggarrange()
+  , "reshape"     # For melt()
+  , "paletteer"   # For palettes
 )
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
+
+# Create output directory (if it doesn't exist) --------------------------------
+if (!dir.exists("plots")) dir.create("plots")
 
 # Data -------------------------------------------------------------------------
 models2 <- c(
@@ -153,7 +154,9 @@ mboxplot <-
   geom_boxplot(alpha = 0) +
   geom_point(aes(x = cx, y = mean, colour = cx)
              , position = position_jitterdodge(jitter.width = .1)) +
-  scale_colour_manual(values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)) +
+  scale_colour_manual(
+    values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)
+  ) +
   labs(x = bquote(c[x]), colour = bquote(c[x])) +
   scale_y_continuous("Mean opinion",
                      0:5*.2,
@@ -175,7 +178,9 @@ e0boxplot <-
   ) +
   geom_point(aes(x = cx, y = mean, colour = cx)
              , position = position_jitterdodge(jitter.width = .1)) +
-  scale_colour_manual(values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)) +
+  scale_colour_manual(
+    values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)
+  ) +
   labs(x = bquote(c[x]), colour = bquote(c[x])) +
   scale_y_continuous("% agents in an anti-science Echo Chamber",
                      0:5*20,
@@ -193,7 +198,9 @@ e1boxplot <-
   geom_boxplot(alpha = 0) +
   geom_point(aes(x = cx, y = mean, colour = cx)
              , position = position_jitterdodge(jitter.width = .1)) +
-  scale_colour_manual(values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)) +
+  scale_colour_manual(
+    values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)
+  ) +
   labs(x = bquote(c[x]), colour = bquote(c[x])) +
   scale_y_continuous("% agents in a pro-science Echo Chamber",
                      0:5*20,
@@ -211,7 +218,9 @@ eboxplot <-
   geom_boxplot(outlier.alpha = 0) +
   geom_point(aes(x = cx, y = mean, colour = cx),
              , position = position_jitterdodge(jitter.width = .1)) +
-  scale_colour_manual(values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)) +
+  scale_colour_manual(
+    values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)
+  ) +
   labs(x = bquote(c[x]), colour = bquote(c[x])) +
   scale_y_continuous("% agents in any Echo Chamber",
                      0:5*20,
@@ -229,12 +238,6 @@ eboxall <- ggarrange(plotlist = list(e0boxplot, e1boxplot, eboxplot),
                      common.legend = TRUE,
                      legend = "right")
 eboxall
-
-# Save plots -------------------------------------------------------------------
-ggsave(file.path("plots", "e_box.png"), eboxall,
-       width = 3000, height = 1500, units = "px")
-ggsave(file.path("plots", "Figure3.eps"), eboxall,
-       width = 6, height = 4.5, dpi = 450)
 
 # Number of shares -------------------------------------------------------------
 results_sh <- sapply(
@@ -307,12 +310,6 @@ txaplot <- ggarrange(plotlist = list(txplot, aplot),
                      legend = "right")
 txaplot
 
-# Save plots -------------------------------------------------------------------
-ggsave(file.path("plots", "txa_plot.png"), txaplot,
-       width = 2200, height = 1500, units = "px")
-ggsave(file.path("plots", "Figure6.eps"), txaplot,
-       width = 6, height = 5, dpi = 450)
-
 # SD plot ----------------------------------------------------------------------
 sddata0 <- do.call(
   rbind,
@@ -344,6 +341,16 @@ msdarrange <- ggarrange(plotlist = list(mboxplot, sdboxplot),
                         common.legend = TRUE,
                         legend = "right")
 msdarrange
+
+# Save plots -------------------------------------------------------------------
+ggsave(file.path("plots", "e_box.png"), eboxall,
+       width = 3000, height = 1500, units = "px")
+ggsave(file.path("plots", "Figure3.eps"), eboxall,
+       width = 6, height = 4.5, dpi = 450)
+ggsave(file.path("plots", "txa_plot.png"), txaplot,
+       width = 2200, height = 1500, units = "px")
+ggsave(file.path("plots", "Figure6.eps"), txaplot,
+       width = 6, height = 5, dpi = 450)
 ggsave(file.path("plots", "msd_plot.png"), msdarrange,
        width = 2200, height = 1500, units = "px")
 ggsave(file.path("plots", "Figure4.eps"), msdarrange,

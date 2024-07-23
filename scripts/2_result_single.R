@@ -9,16 +9,15 @@
 
 # Load packages
 pkgs <- list(
-  "igraph"        # For networks
-  , "reshape"     # For melt
-  , "ggplot2"
-  , "ggnewscale"
-  , "ggthemes"
-  , "paletteer"
-  , "gridExtra"
-  , "ggpubr"
+  "igraph"       # For networks
+  , "ggplot2"    # For all the figures
+  , "paletteer"  # For colour palettes
+  , "ggpubr"     # For ggarrange()
 )
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
+
+# Create object directory (if it doesn't exist)
+if (!dir.exists("plots")) dir.create("plots")
 
 # Function to create figures ---------------------------------------------------
 fig.fun <- function(g, i) {
@@ -67,8 +66,8 @@ hist.fun <- function(p, i) {
 # Opinion
 source(file.path("scripts", "default_params.R"))
 pers <- readRDS(file.path("input", "persi.rds"))
-bs <- (stcon0 / (bs0)) * 1.5^-pers$i
-as <- (stcon0 * (bs0)) * 1.5^pers$i
+bs <- (stcon0 / (ths0)) * 1.5^-pers$i
+as <- (stcon0 * (ths0)) * 1.5^pers$i
 ps <- ((as - 1/3) / (as + bs - 2/3))
 
 # Model outputs

@@ -11,7 +11,6 @@
 pkgs <- list(
   "igraph"        # For networks
   , "fastmatch"   # For fmatch() and %fin%
-  , "progress"    # For progress bars
   , "openssl"     # For creating hashes
 )
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
@@ -36,7 +35,7 @@ hash_functions <- md5(
 )
 
 # Parameters from a prior run?
-if (file.exists(file.path("output", "params_base_np.rds"))) {
+if (file.exists(file.path("output", "params_", model_name, ".rds"))) {
   params_in <- readRDS(file.path("output", "params_", model_name, ".rds"))
 } else {
   params_in <- rep(0, length(params))
@@ -50,7 +49,7 @@ if (file.exists(file.path("output", "hash_functions.rds"))) {
 }
 
 # Run?
-if (!file.exists(file.path("output", "base_np.rds"))) {
+if (!file.exists(file.path("output", paste0(model_name, ".rds")))) {
   run0 <- TRUE
 } else {
   run0 <- FALSE
@@ -59,7 +58,8 @@ if (!file.exists(file.path("output", "base_np.rds"))) {
                 "Rename/delete the output and run again."))
   } else {
     if (sum(params != params_in) != 0) {
-      print("Different parameter values: Rename/delete the output and run again.")
+      print(paste0("Different parameter values: Rename/delete the output and",
+                   "run again."))
     } else {
       if (!hash_functions0 == hash_functions) {
         print(paste(

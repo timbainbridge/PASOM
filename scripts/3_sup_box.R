@@ -2,14 +2,15 @@
 
 # Load packages ----------------------------------------------------------------
 pkgs <- list(
-  "ggplot2"
-  , "ggpubr"
-  , "ggnewscale"
-  , "reshape"
-  , "paletteer"
-  , "igraph"
+  "ggplot2"      # For all the figures
+  , "ggpubr"     # For ggarrange()
+  , "reshape"    # For melt()
+  , "paletteer"  # For palettes
 )
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
+
+# Create object directory (if it doesn't exist) --------------------------------
+if (!dir.exists("plots")) dir.create("plots")
 
 # Data -------------------------------------------------------------------------
 models_sup <- c(
@@ -214,9 +215,6 @@ eboxall <- ggarrange(plotlist = list(e0boxplot, e1boxplot, eboxplot),
                      legend = "none")
 eboxall
 
-# Save plots -------------------------------------------------------------------
-saveRDS(eboxall, file.path("plots", "sup_echo_plot.rds"))
-
 # Number of toxic shares -------------------------------------------------------
 results_sh_sup <- sapply(
   models_sup,
@@ -282,9 +280,6 @@ txaplot <- ggarrange(plotlist = list(txplot, aplot),
                      legend = "none")
 txaplot
 
-# Save plots -------------------------------------------------------------------
-saveRDS(txaplot, file.path("plots", "sup_txa_plot.rds"))
-
 # SD plot ----------------------------------------------------------------------
 sddata0 <- do.call(
   rbind,
@@ -319,5 +314,7 @@ msdarrange <- ggarrange(plotlist = list(mboxplot, sdboxplot),
                         legend = "none")
 msdarrange
 
-# Save -------------------------------------------------------------------------
+# Save plots -------------------------------------------------------------------
+saveRDS(eboxall, file.path("plots", "sup_echo_plot.rds"))
+saveRDS(txaplot, file.path("plots", "sup_txa_plot.rds"))
 saveRDS(msdarrange, file.path("plots", "sup_msd_plot.rds"))
