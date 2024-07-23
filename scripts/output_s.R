@@ -6,11 +6,7 @@
 ################################################################################
 
 # Load packages ----------------------------------------------------------------
-pkgs <- list(
-  "igraph"        # For networks
-  , "psych"       # For describe()
-)
-sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
+library(igraph)
 
 # Load output ------------------------------------------------------------------
 output <- readRDS(file.path("output", model))
