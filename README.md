@@ -12,20 +12,20 @@ The directory structure is:
 - `run_sims`	contains scripts to run the simulations
 - `scripts`	  contains all other scripts
 
-Only the `scripts` and `run_sims` folders are included on github with other directories created as needed within the code.
+Only the `scripts` and `run_sims` folders are included on GitHub with other directories created as needed within the code.
 
 Within the `scripts` folder:
 - `0_fixed.R` creates objects used as inputs in the simulations
 - `1_output.R` extracts relevant data from simulation output objects
 - Files beginning with `2_` generate results for the manuscript
 - Files beginning with `3_` create results for the supplement
-- All other files are used with 'source()' in other scripts.
+- All other files are used with 'source()' in other scripts
 
 Within the `run_sims` folder, each of the files runs an associated set of simulations.
 
 ## Run Simulations
 
-All code must be run with the base directory as the working directory. In RStudio, this can be done by clicking the down arrow next to `Source`, selecting `Source as Background Job...`, and setting the working directory as the base directory.
+All code is R code and was run on an RStudio Server. Code must be run with the base directory as the working directory. If set up in a project in RStudio, this can be done by clicking the down arrow next to `Source`, selecting `Source as Background Job...`, and setting the working directory as the base directory.
 
 To run a set of simulations, first run `0_fixed.R` to create input files or create alternative versions via some other method. Then either open and run the desired script from the `run_sims` folder, or create a new file to run an alternative set of simulations with alternative parameter values or inputs.
 
@@ -37,7 +37,7 @@ If running alternative sets of simulations from those included, the file should 
 
 These are used in the downstream script, `modelsetup_np.R`, so must be set.
 
-To run the simulations, the `igraph`, `fastmatch`, and `openssl` packages are required. To produce figures and other results from the simulation outputs, the `ggplot2`, `ggnewscale`, `ggpubr`, `igraph`, `paletteer`, and `reshape` packages are required.
+To run the simulations, the `igraph`, `fastmatch`, and `openssl` packages are required. To produce figures and other results from the simulation outputs, the `ggplot2`, `ggnewscale`, `ggpubr`, `igraph`, `paletteer`, and `reshape` packages are required. The `usethis` and `gitcreds` packages were used to set up this GitHub repository from RStudio Server.
 
 ## Model Outputs
 
