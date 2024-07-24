@@ -37,9 +37,11 @@ If running alternative sets of simulations from those included, the file should 
 
 These are used in the downstream script, `modelsetup_np.R`, so must be set.
 
+To run the simulations, the `igraph`, `fastmatch`, and `openssl` packages are required. To produce figures and other results from the simulation outputs, the `ggplot2`, `ggnewscale`, `ggpubr`, `igraph`, `paletteer`, and `reshape` packages are required.
+
 ## Model Outputs
 
-Running models will create the `output` folder and will populate the folder with a file of the simulation outputs and a file of the parameter values used in the simulations. A hash of the functions used will also be created (to check that the functions have not changed between runs). All files are saved with the `.rds` file type. The files can be opened in any program that can interpret R code, such as R or RStudio.
+Running models will create the `output` folder and will populate the folder with a file containing each of the simulation outputs and a file of the parameter values used for each of the simulations. A hash of the functions used will also be created, which is used to check that the functions have not changed between runs. All files are saved with the `.rds` file type. The files can be opened in any program that can interpret R code, such as R or RStudio.
 
 The main simulation output files (indicated by the simulation name followed by `_np`) are structured identically with the following structure. In all cases, matrices are arranged with agents separated by rows (i.e., agent 1 is row 1) and rounds separated by columns (i.e., column 1 is round 1). In the below schematic, `model_output` is the model output file and `iteration_number` is the number of the simulation for the model (from 1 to 200 in the default case).
 
