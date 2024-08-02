@@ -1,4 +1,10 @@
 ############################ Significance tests ################################
+#
+# Performs the significance tests reported in the paper.
+#
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
+#
+################################################################################
 
 # Load data --------------------------------------------------------------------
 models <- c("base", paste0("cx", c(15, 1, 5, 0)))
@@ -112,8 +118,8 @@ op1 <- c(cx1_to_base = t_tests1$base$op$p.value,
 op1
 min(op1)
 
-# "The mean [of opinion] was significantly lower than that of the simulations for
-# cx = 1 (p = .009)"
+# "The mean [of opinion] was significantly lower than that of the simulations
+# for cx = 1 (p = .009)"
 t_tests5$cx1$op$p.value
 
 # ...but was not significantly different for the two higher values of cx

@@ -6,6 +6,8 @@
 # take randomness in their generation (i.e., the network could've had different
 # people in it or different connections) into account.
 #
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
+#
 ################################################################################
 
 # Packages ---------------------------------------------------------------------

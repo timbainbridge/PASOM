@@ -3,6 +3,8 @@
 # This file is called by `1_output.R` and produces outputs for each of the
 # models listed there.
 #
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
+#
 ################################################################################
 
 # Load packages ----------------------------------------------------------------

@@ -1,6 +1,8 @@
-################ A file to produce the results for the models ##################
+################ A file to produce boxplots for the paper ######################
 #
 # Produces Figures 3, 4, and 6 from the paper.
+#
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
 #
 ################################################################################
 

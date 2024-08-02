@@ -1,4 +1,10 @@
-################ A file to produce the results for the models ##################
+############################ Supplement boxplots ###############################
+#
+# Produces the boxplots found in the supplement.
+#
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
+#
+################################################################################
 
 # Load packages ----------------------------------------------------------------
 pkgs <- list(

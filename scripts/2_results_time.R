@@ -1,7 +1,9 @@
-################################# Results ######################################
+############################ Progression plots #################################
 #
 # Produces Figure 1 for the paper and equivalent results for other simulations
 # (not used in outputs anywhere).
+#
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
 #
 ################################################################################
 

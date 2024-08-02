@@ -1,22 +1,28 @@
-# Default parameter values -----------------------------------------------------
+########################### Default parameter values ###########################
+#
+# Loads the default parameter values.
+#
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
+#
+################################################################################
 
-# Overall model parameters
-iter0 <- 200  # Number of models per parameter set
+# Overall model parameters -----------------------------------------------------
+iter0 <- 200    # Number of models per parameter set
 rounds0 <- 200  # Number of iterations of the model
 
-# Network parameters (used in creating the network graphs)
-n_agent0 <- 500         # Number of agents
+# Network parameters (used in creating the network graphs) ---------------------
+n_agent0 <- 500        # Number of agents
 group_n <- n_agent0/5  # Number of groups
 p_in <- 1              # P of connecting with someone in one's group
 p_out <- 1/n_agent0    # P of connecting with someone not in one's group
 
-# Model setup parameters
+# Model setup parameters -------------------------------------------------------
 stcon0 <- 25    # Starting confidence
 shrpp0 <- .2    # Expectation of number of contacts who will share at start
 aa0 <- 20       # Constructive sharing prior.
 at0 <- 1        # Toxic prior
 
-# Other parameters
+# Other parameters -------------------------------------------------------------
 dt0 <- .9        # Discount multiplier for toxic interactions
 da0 <- .9        # Discount multiplier for agreeable interactions
 sdi0 <- .8       # SD of individual randomness of info posting decision
@@ -30,7 +36,7 @@ bag0 <- bap0
 btg0 <- btp0
 ck0 <- .04    # Cost per con to maintain the con -- theoretical max cons = 25 (1/ck).
 cb0 <- .2     # Benefit per con of having the con -- max deduction from cons = 5 (1/cb).
-ths0 <- 1.03   # Pro-science bias
+ths0 <- 1.03  # Pro-science bias
 cx0 <- 2      # General propensity to interact toxically
 nu0 <- .05    # Lost interest reduction
 mu0 <- 500    # Required value of lost interest function to lose interest

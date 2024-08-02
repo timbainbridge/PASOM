@@ -1,13 +1,22 @@
-# Model functions ##############################################################
+############################ Model functions ###################################
 #
-# The first function (fun.a) runs each round of the model, the second (fun.b)
-# runs the models over all rounds.
+# The functions that run the simulations.
 #
-# At the moment, these functions call parameters from the global environment. It
-# seems at best inelegant. An alternative would be to package parameters into an
-# object and either change parameters to take them from the object or, likely
-# better, use a for loop and assign() to recreate the parameters within the
-# function's environment. This will do for now, however.
+# The first function (fun.a) runs each round of the model. For network updating,
+# fun.a only selects the edges to create or sever.
+
+# The second function (fun.b) sets up the run, saves outputs and agent values
+# for the next round, and updates the network (based on informaiton returned
+# from fun.a).
+#
+# These functions call parameters from the global environment, loaded in prior
+# setup code.
+#
+# (An alternative would be to package parameters into an object and either
+# change parameters to take them from the object or use a for loop and assign()
+# to recreate the parameters within the function's environment.)
+#
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
 #
 ################################################################################
 

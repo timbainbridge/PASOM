@@ -2,6 +2,8 @@
 #
 # Produces results from single simulations for the supplement.
 #
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
+#
 ################################################################################
 
 # Setup ------------------------------------------------------------------------

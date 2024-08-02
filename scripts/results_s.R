@@ -4,6 +4,8 @@
 # results from the simulations for each of the varieties listed in the upstream
 # file.
 #
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
+#
 ################################################################################
 
 # Load packages ----------------------------------------------------------------

@@ -3,6 +3,8 @@
 # This script sets up and runs the simulation, taking input from a file in the
 # `run_sims` folder.
 #
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
+#
 ################################################################################
 
 # Setup ------------------------------------------------------------------------

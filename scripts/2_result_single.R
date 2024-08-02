@@ -1,7 +1,9 @@
 ############################ Single run focus ##################################
 #
-# Some results for selecting simulations. Produces Figures 2 and 5 from the
+# Some results from selected simulations. Produces Figures 2 and 5 from the
 # paper.
+#
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
 #
 ################################################################################
 

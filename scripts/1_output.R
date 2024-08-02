@@ -1,4 +1,10 @@
 ############################# Produce the outputs ##############################
+#
+# This file organises model outputs into a more useful form.
+#
+# Copyright CSIRO 2024 under GPL-3.0-or-later.
+#
+################################################################################
 
 # Results save location
 if (!dir.exists("results")) dir.create("results")

@@ -99,3 +99,7 @@ And the files for the simulations reported in the supplement are as follows:
 - `ck8_np.rds`: The "CK.08" set of simulations from the supplement, changing the value of the c_{KG} parameter from 0.04 to 0.08 (see Equation (23))
 - `cb1_np.rds`: The "CB1" set of simulations from the supplement, changing the value of the c_{BG} parameter from 0.2 to 0.1 (see Equation (23))
 - `d0_np.rds`: The "D0" set of simulations from the supplement, changing the value of d_T and d_A from 0.9 to 0 (see Equations (2)-(3) and (6)-(7))
+
+# Copyright
+
+All content within the repository is the Copyright of the Commonwealth Scientific and Industrial Research Organisation (CSIRO) 2024 and is distributed under the terms of the GNU General Public License (GPL) version 3 or later. See LICENSE.md for the standard GPL license terms.
