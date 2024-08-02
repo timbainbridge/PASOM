@@ -102,4 +102,10 @@ And the files for the simulations reported in the supplement are as follows:
 
 # Copyright
 
-All content within the repository is the Copyright of the Commonwealth Scientific and Industrial Research Organisation (CSIRO) 2024 and is distributed under the terms of the GNU General Public License (GPL) version 3 or later. See LICENSE.md for the standard GPL license terms.
+All content within the repository is the Copyright of the Commonwealth Scientific and Industrial Research Organisation (CSIRO) 2024 and is distributed under the terms of the GNU General Public License (GPL) version 3 or later. See the LICENSE file for the standard GPL license terms.
+
+PASOM is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+PASOM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with PASOM. If not, see <https://www.gnu.org/licenses/>.
