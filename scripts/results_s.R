@@ -20,7 +20,7 @@ sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
 
 # Load results -----------------------------------------------------------------
 
-results <- readRDS(file.path("results", model))
+# results <- readRDS(file.path("results", paste0(model, "_r.rds")))
 
 # Values at final round --------------------------------------------------
 echo1 <- results$echo$echo1 * 100  # as percentage
@@ -29,7 +29,7 @@ echo <- echo0[nrow(echo0), ]
 echo2 <- echo1[nrow(echo1), ] + echo0[nrow(echo0), ]
 opm0 <- results$opinion$mean
 opm <- opm0[nrow(opm0), ]
-lmda <- results$lambda
+# lmda <- results$lambda
 
 # M over time ------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ mplot <-
                      1:5*.2-.1,
                      0:5*.2,
                      limits = c(0, 1),
-                     expand = c(0, 0)) +
+                     expand = c(.02, .02)) +
   labs(x = "Round",
        colour = "% agents in\nanti-science\nEC at\nfinal round") +
   theme_bw()
@@ -163,13 +163,14 @@ eplot2 <-
   ggtitle("(C)")
 
 # Combined Mean and Echo plots -------------------------------------------------
-meplot <- ggarrange(plotlist = list(e0plot2, eplot2, e1plot2, mplot2),
-                    # nrow = 2, ncol = 2,
-                    nrow = 4,
-                    # labels = c("(A)", "(B)"),
-                    common.legend = FALSE,
-                    legend = "right")
+meplot <- ggarrange(
+  plotlist = list(e0plot2, e1plot2, eplot2, mplot2),
+  # nrow = 2, ncol = 2,
+  nrow = 4,
+  # labels = c("(A)", "(B)"),
+  common.legend = FALSE,
+  legend = "right"
+)
 
 # Return results ---------------------------------------------------------------
-
 plots <- meplot

@@ -5,13 +5,13 @@ source(file.path("scripts", "default_params.R"))
 source(file.path("scripts", "default_objects.R"))
 
 # Parameter changes from defaults for the current simulations
-# None for this sim
+stcdv0 <- 1.05
 
 # Object changes from defaults for the current simulations
-# None for this sim
+pers0 <- readRDS(file.path("input", "pers01.rds"))
 
 # Input data
-model <- "base"
+model <- "stpriors"
 
 # Run simulations
 source(file.path("scripts", "modelsetup.R"))

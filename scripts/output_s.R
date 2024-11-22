@@ -11,12 +11,15 @@
 library(igraph)
 
 # Load output ------------------------------------------------------------------
-output <- readRDS(file.path("output", model))
+
+# Now run immediately after the model. No need to reload.
+
+# output <- readRDS(file.path("output", paste0(model, ".rds")))
 
 # Final round ------------------------------------------------------------------
 fround <- sapply(output, function(x) x$final_round)
 
-# Interest ---------------------------------------------------------------------
+# # Interest ---------------------------------------------------------------------
 lmda <- sapply(output, function(x) (x$lmda == 1) |> colSums())
 
 # Shares by round --------------------------------------------------------------
@@ -62,11 +65,7 @@ mdeg <- list(start = output[[1]]$g0 |> distances() |> max(),
 rm(output)
 
 # Return results ---------------------------------------------------------------
-outputr <- list(fround = fround,
-                shares = shares,
-                opinion = opinion_stats,
-                echo = echo,
-                gsize = gsz,
-                lambda = lmda,
-                mxdegree = mdeg,
-                homophily = homoph)
+results <- list(
+  fround = fround, shares = shares, opinion = opinion_stats, echo = echo,
+  gsize = gsz, lambda = lmda, mxdegree = mdeg, homophily = homoph
+)

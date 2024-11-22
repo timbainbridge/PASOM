@@ -5,13 +5,13 @@ source(file.path("scripts", "default_params.R"))
 source(file.path("scripts", "default_objects.R"))
 
 # Parameter changes from defaults for the current simulations
-# None for this sim
+stcdv0 <- 3
 
 # Object changes from defaults for the current simulations
 # None for this sim
 
 # Input data
-model <- "base"
+model <- "stcdv30"
 
 # Run simulations
 source(file.path("scripts", "modelsetup.R"))

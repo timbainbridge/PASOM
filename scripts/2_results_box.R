@@ -30,50 +30,51 @@ results2 <- sapply(
   models2,
   function(x) {
     tmp <- readRDS(file.path("results", paste0(x, "_r.rds")))
-    echo20 <- (tmp$echo$echo1[200, ] + tmp$echo$echo0[200, ]) * 100
+    rnd <- nrow(tmp$echo$echo1)
+    echo20 <- (tmp$echo$echo1[rnd, ] + tmp$echo$echo0[rnd, ]) * 100
     echo2w <- wilcox.test(echo20, conf.int = TRUE, mu = -.001)
     echo21 <- echo2w$conf.int
     echo2pm <- echo2w$estimate
     echo2t <- t.test(echo20)$conf.int
     echo2m <- echo20 |> mean()
     echo2md <- echo20 |> median()
-    echo2 <- c(echo21, echo2pm, echo2t, echo2m, echo2md, 200)
-    names(echo2) <- c("lower", "upper", "pseudomedian",
-                      "lowert", "uppert", "mean", "median", "round")
-    echo10 <- tmp$echo$echo1[200, ] * 100
+    echo2 <- c(echo21, echo2pm, echo2t, echo2m, echo2md, rnd)
+    nms <- c(
+      "lower", "upper", "pseudomedian", "lowert", "uppert", "mean", "median",
+      "round"
+    )
+    names(echo2) <- nms
+    echo10 <- tmp$echo$echo1[rnd, ] * 100
     echo1w <- wilcox.test(echo10, conf.int = TRUE, mu = -.001)
     echo11 <- echo1w$conf.int
     echo1pm <- echo1w$estimate
     echo1t <- t.test(echo10)$conf.int
     echo1m <- echo10 |> mean()
     echo1md <- echo10 |> median()
-    echo1 <- c(echo11, echo1pm, echo1t, echo1m, echo1md, 200)
-    names(echo1) <- c("lower", "upper", "pseudomedian",
-                      "lowert", "uppert", "mean", "median", "round")
-    echo00 <- tmp$echo$echo0[200, ] * 100
+    echo1 <- c(echo11, echo1pm, echo1t, echo1m, echo1md, rnd)
+    names(echo1) <- nms
+    echo00 <- tmp$echo$echo0[rnd, ] * 100
     echo0w <- wilcox.test(echo00, conf.int = TRUE, mu = -.001)
     echo01 <- echo0w$conf.int
     echo0pm <- echo0w$estimate
     echo0t <- t.test(echo00)$conf.int
     echo0m <- echo00 |> mean()
     echo0md <- echo00 |> median()
-    echo0 <- c(echo01, echo0pm, echo0t, echo0m, echo0md, 200)
-    names(echo0) <- c("lower", "upper", "pseudomedian",
-                      "lowert", "uppert", "mean", "median", "round")
-    opm0 <- tmp$opinion$mean[200, ]
+    echo0 <- c(echo01, echo0pm, echo0t, echo0m, echo0md, rnd)
+    names(echo0) <- nms
+    opm0 <- tmp$opinion$mean[rnd, ]
     opmw <- wilcox.test(opm0, conf.int = TRUE)
     opm1 <- opmw$conf.int
     opmpm <- opmw$estimate
     opmt <- t.test(opm0)$conf.int
     opmm <- opm0 |> mean()
     opmmd <- opm0 |> median()
-    opm <- c(opm1, opmpm, opmt, opmm, opmmd, 200)
-    names(opm) <- c("lower", "upper", "pseudomedian",
-                    "lowert", "uppert", "mean", "median", "round")
+    opm <- c(opm1, opmpm, opmt, opmm, opmmd, rnd)
+    names(opm) <- nms
     ppro <- (tmp$opinion$final > .5) |> colMeans()
     panti <- (tmp$opinion$final < .5) |> colMeans()
     homophily <- tmp$homophily
-    sdop <- tmp$opinion$sd[200, ]
+    sdop <- tmp$opinion$sd[rnd, ]
     list(echo1 = echo1, echo10 = echo10, echo0 = echo0, echo00 = echo00,
          echo2 = echo2, echo20 = echo20, opm = opm, opm0 = opm0,
          homophily = homophily, sd = sdop, ppro = ppro, panti = panti)
