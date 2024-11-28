@@ -31,11 +31,11 @@
 # bap <- bap1
 # btp <- btp1
 # ccp <- ccp1
-# bsp <- bsp1
 # bag <- bag1
 # btg <- btg1
 # ck <- ck1
 # cb <- cb1
+# ths <- ths1
 # u <- u1
 # cx <- cx1
 # nu <- nu1
@@ -48,7 +48,7 @@ fun.a <- function(
   agents1, g1,
   # Defaults take what's in the global environment (if anything).
   dt = dt1, da = da1, sdi = sdi1, sdj = sdj1,
-  bap = bap1, btp = btp1, ccp = ccp1, bsp = bsp1,
+  bap = bap1, btp = btp1, ccp = ccp1,
   bag = bag1, btg = btg1, ck = ck1, cb = cb1,
   ths = ths1, u = u1, cx = cx1, nu = nu1, mu = mu1, p1 = p11
 ) {
@@ -487,7 +487,6 @@ fun.a <- function(
 # bap1 <- bap0
 # btp1 <- btp0
 # ccp1 <- ccp0
-# bsp1 <- bsp0
 # bag1 <- bag0
 # btg1 <- btg0
 # ck1 <- ck0
@@ -508,7 +507,7 @@ fun.b <- function(g0, pers0,
   iter = iter0, n_agent = n_agent0,
   rounds = rounds0, stcon = stcon0, stcdv = stcdv0, shrpp = shrpp0,
   dt1 = dt0, da1 = da0, sdi1 = sdi0, sdj1 = sdj0,
-  bap1 = bap0, btp1 = btp0, ccp1 = ccp0, bsp1 = bsp0,
+  bap1 = bap0, btp1 = btp0, ccp1 = ccp0,
   bag1 = bag0, btg1 = btg0, ck1 = ck0, cb1 = cb0,
   ths1 = ths0, u1 = u0, cx1 = cx0, nu1 = nu0, mu1 = mu0, p11 = p10,
   gma = gma0, at = at0, aa = aa0
@@ -550,7 +549,7 @@ fun.b <- function(g0, pers0,
     out <- fun.a(
       out$agents, g,
       dt = dt1, da = da1, sdi = sdi1, sdj = sdj1,
-      bap = bap1, btp = btp1, ccp = ccp1, bsp = bsp1,
+      bap = bap1, btp = btp1, ccp = ccp1,
       bag = bag1, btg = btg1, ck = ck1, cb = cb1, u = u1, cx = cx1,
       nu = nu1, mu = mu1, p1 = p11, ths = ths1
     )
@@ -607,23 +606,48 @@ fun.b <- function(g0, pers0,
     echo00 <- mapply(
       function(x, y) {
         # Proportion of connections with pro-science view
-        m <- (out$agents[y, "ps"] >= .5) |> mean()
+        m1 <- (out$agents[y, "ps"] > .5) |> mean()
+        m0 <- (out$agents[y, "ps"] < .5) |> mean()
         # In pro (1) or anti (-1) science echo chamber or neither (0)?
-        ifelse(x == 1 & m >= .9, 1, ifelse(x == -1 & m <= .1, -1, 0))
+        ifelse(x == 1 & m1 >= .9, 1, ifelse(x == -1 & m0 >= .9, -1, 0))
       },
       x = op, y = adjacent_vertices(g, out$agents$id)
     )
     echo[, i] <- echo00
   }
   # Output ---------------------------------------------------------------------
+  
+  # Final average neighbour opinion
+  extra <- mapply(
+    function(x, y) {
+      m1_inc <- (out$agents[y, "ps"] > .5) |> mean()
+      m0_inc <- (out$agents[y, "ps"] < .5) |> mean()
+      m1_ex <- (out$agents[y, "ps"] > .75) |> mean()
+      m0_ex <- (out$agents[y, "ps"] < .25) |> mean()
+      c(
+        nb_opinion = out$agents$ps[V(g) %in% y] |> mean(),
+        echo_inc = ifelse(
+          x >= .6 & m1_inc >= .75, 1, ifelse(x <= .4 & m0_inc >= .75, -1, 0)
+        ),
+        echo_ex = ifelse(
+          x >= .75 & m1_ex >= .95, 1, ifelse(x <= .25 & m0_ex >= .95, -1, 0)
+        )
+      )
+    },
+    x = out$agents$ps, y = adjacent_vertices(g, out$agent$id)
+  ) |> t() |> as.data.frame()
+  row.names(extra) <- row.names(out$agents)
   list(
     opinion1 = opinion1,
+    nb_opinion = extra$nb_opinion,
     K1 = K1,
     a11 = a11,
     a10 = a10,
     tx11 = tx11,
     tx10 = tx10,
     echo = echo,
+    echo_inc = extra$echo_inc,
+    echo_ex = extra$echo_ex,
     pub11 = pub11,
     pub10 = pub10,
     lmda1 = lmda1,
