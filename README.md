@@ -4,19 +4,18 @@ This depository contains the code to run PASOM--An agent-based model simulating 
 
 ## Director Structure
 
+Of the below directories, only the `scripts` and `run_sims` folders are included on GitHub with other directories created as needed within the code.
+
 The directory structure is:
-- `input`		  contains objects used to in to run the simulations, including 'graph' objects (starting with 'g') and objects used to create agents' priors (persi.rds and persi2.rds)
+- `input`		  contains objects used to run the simulations, including 'graph' objects (starting with 'g') and objects used to create agents' priors (pers00.rds and pers20.rds)
 - `output`	  contains the outputs from the model runs (files described below)
 - `plots`		  contains plots produced from the simulations outputs
 - `results`	  contains cleaned results from the simulations used to produce the plots and other results
 - `run_sims`	contains scripts to run the simulations
 - `scripts`	  contains all other scripts
 
-Only the `scripts` and `run_sims` folders are included on GitHub with other directories created as needed within the code.
-
 Within the `scripts` folder:
-- `0_fixed.R` creates objects used as inputs in the simulations
-- `1_output.R` extracts relevant data from simulation output objects
+- `0_fixed.R` creates objects used as inputs in the simulations and must be run prior to running any simulations.
 - Files beginning with `2_` generate results for the manuscript
 - Files beginning with `3_` create results for the supplement
 - All other files are used with 'source()' in other scripts
@@ -29,21 +28,23 @@ All code is R code and was run on an RStudio Server. Code must be run with the b
 
 To run a set of simulations, first run `0_fixed.R` to create input files or create alternative versions via some other method. Then either open and run the desired script from the `run_sims` folder, or create a new file to run an alternative set of simulations with alternative parameter values or inputs.
 
+Note that the code may not work in a Windows environment due to the use of `mclapply()`. This function parallellises the process of running multiple simulations and works 'out of the box' on Linux and Mac but may require setting up to work on Windows. Alternatively, the code can be changed to `lapply()` but this will make running the code take substantially longer as simulations will run consecutively.
+
 If running alternative sets of simulations from those included, the file should include:
 - Parameter values (or load them from `default_params.R` in `scripts` and then optionally change selected ones)
-- A network (labelled, `graph_input`)
-- A data.frame used to set priors in the model function (labelled, `pers_input`)
-- A simulation set name (labelled, `model_name`).
+- A network (labelled, `g0`, optionally loaded from `default_objects.R`)
+- A data.frame used to set priors in the model function (labelled, `pers0`, also optionally loaded from `default_objects.R`)
+- A simulation name (labelled, `model`).
 
-These are used in the downstream script, `modelsetup_np.R`, so must be set.
+These are used in the downstream script, `modelsetup.R`, so must be set.
 
-To run the simulations, the `igraph`, `fastmatch`, and `openssl` packages are required. To produce figures and other results from the simulation outputs, the `ggplot2`, `ggnewscale`, `ggpubr`, `igraph`, `paletteer`, and `reshape` packages are required. The `usethis` and `gitcreds` packages were used to set up this GitHub repository from RStudio Server.
+To run the simulations, the `igraph`, `fastmatch`, and `openssl` packages are required. To produce figures and other results from the simulation outputs, the `ggplot2`, `ggnewscale`, `cowplot`, `igraph`, `paletteer`, and `reshape` packages are required. The `usethis` and `gitcreds` packages were used to set up the GitHub repository from RStudio Server.
 
 ## Model Outputs
 
-Running models will create the `output` folder and will populate the folder with a file containing each of the simulation outputs and a file of the parameter values used for each of the simulations. A hash of the functions used will also be created, which is used to check that the functions have not changed between runs. All files are saved with the `.rds` file type. The files can be opened in any program that can interpret R objects, such as R or RStudio.
+Running models will create the `output` folder and and a folder for the simulation (named as the string assigned to `model`). The code will populate the folder with files for each of the simulation outputs. A file of the parameter values used for each of the simulations will be placed in the `output` folder. The text of functions used will also be created, which is used to check that the functions have not changed between runs. All files are saved with the `.rds` file type. The files can be opened in any program that can interpret R objects, such as R or RStudio.
 
-The main simulation output files (indicated by the simulation name followed by `_np`) are structured identically with the following structure. In all cases, matrices are arranged with agents separated by rows (i.e., agent 1 is row 1) and rounds separated by columns (i.e., column 1 is round 1). In the below schematic, `model_output` is the model output file and `iteration_number` is the number of the simulation for the model (from 1 to 200 in the default case).
+% The main simulation output files (indicated by the simulation name followed by `_np`) are structured identically with the following structure. In all cases, matrices are arranged with agents separated by rows (i.e., agent 1 is row 1) and rounds separated by columns (i.e., column 1 is round 1). In the below schematic, `model_output` is the model output file and `iteration_number` is the number of the simulation for the model (from 1 to 200 in the default case).
 
 File structure:
 ```

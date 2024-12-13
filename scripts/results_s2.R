@@ -15,61 +15,36 @@ pkgs <- list(
   , "ggplot2"    # For all the figures
   , "paletteer"  # For colour palettes
   # , "ggpubr"     # For ggarrange()  # Does not work with ggMarginal()
-  , "ggExtra"    # For ggMarginal()
+  # , "ggExtra"    # For ggMarginal()
   # , "patchwork"  # Alternative for ggpubr  # Bug in guides = "collect"
-  , "gridExtra"  # Another alternative to ggarrange()
+  # , "gridExtra"  # Another alternative to ggarrange()
   , "ggnewscale"  # For different colours in density plots.
-  , "cowplot"     # For plot_grid()  (4th time lucky?)
+  , "cowplot"     # For plot_grid()  (4th time lucky? Yes!)
 )
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
 
 # Create object directory (if it doesn't exist)
 if (!dir.exists("plots")) dir.create("plots")
 
+source(file.path("scripts", "functions_fig.R"))
+
 # Function to create figures ---------------------------------------------------
-fig.fun <- function(g, leg = FALSE) {
-  set.seed(0)  # For layout_nicely()
-  g_coord <- data.frame(agent = V(g)$name,
-                        layout_nicely(g),
-                        Opinion = V(g)$color)
-  g_edges <- as_data_frame(g)
-  g_edges$from.x1 <- g_coord$X1[match(g_edges$from, g_coord$agent)]
-  g_edges$from.x2 <- g_coord$X2[match(g_edges$from, g_coord$agent)]
-  g_edges$to.x1 <- g_coord$X1[match(g_edges$to, g_coord$agent)]
-  g_edges$to.x2 <- g_coord$X2[match(g_edges$to, g_coord$agent)]
-  ggplot() +
-    geom_segment(aes(x = from.x1, xend = to.x1, y = from.x2, yend = to.x2),
-                 g_edges,
-                 colour="darkgray",
-                 linewidth = .2) +
-    geom_point(aes(x = X1, y = X2), g_coord, size = 1.5, colour = "black") +
-    geom_point(aes(x = X1, y = X2, colour = Opinion), g_coord) +
-    scale_colour_gradientn(
-      colours = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 101, -1),
-      limits = 0:1,
-      breaks = 0:2*.5,
-      labels = 0:2*.5
-    ) +
-    theme_void() +
-    theme(legend.position = ifelse(leg, "left", "none"))
-  # +
-  #   ggtitle(paste0("(", i, ")"))
-}
-hist.fun <- function(p) {
-  ggplot(data.frame(ps = p), aes(x = ps)) +
-    geom_histogram(
-      breaks = 0:50*.02,
-      fill = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 50, -1),
-      colour = "black"
-    ) +
-    xlab("Opinion") +
-    ylab("Count") +
-    xlim(0:1) +
-    theme_bw()
-  # +
-  #   ggtitle(paste0("(", i, ")"))
-}
-dens.fun <- function(i, leg = FALSE) {
+
+# hist.fun <- function(p) {
+#   ggplot(data.frame(ps = p), aes(x = ps)) +
+#     geom_histogram(
+#       breaks = 0:50*.02,
+#       fill = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 50, -1),
+#       colour = "black"
+#     ) +
+#     xlab("Opinion") +
+#     ylab("Count") +
+#     xlim(0:1) +
+#     theme_bw()
+#   # +
+#   #   ggtitle(paste0("(", i, ")"))
+# }
+dens.fun2 <- function(i, leg = FALSE, point = TRUE, alpha = 1) {
   tmp0 <- sapply(
     adjacent_vertices(i$g, V(i$g)$name),
     function(x) i$opinion1[V(i$g) %in% x] |> mean()
@@ -83,46 +58,49 @@ dens.fun <- function(i, leg = FALSE) {
       labels = c("Anti-Science", "Neither", "Pro-Science")
     )
   )
-  p0 <- ggplot(tmp, aes(x = agent, y = neighbours)) +
-    geom_density2d_filled(adjust = .5, bins = 20) +
-    scale_fill_manual(
-      values = paletteer_c("grDevices::Lajolla", 20, -1),
-      guide = "none"
-    ) +
-    new_scale_colour() +
-    geom_point(
-      aes(x = agent, y = neighbours, colour = echo),
-      tmp,
-      size = .25
-    ) +
-    scale_colour_manual(
-      values = setNames(
-        paletteer_c("ggthemes::Green-Blue Diverging", 5)[2:4],
-        c("Anti-Science", "Neither", "Pro-Science")
-      ),
-      guide = guide_legend(
-        override.aes = list(size=2),
-        title = "Echo Chamber\nMembership"
-      )
-    ) +
-    theme_bw() +
-    xlab("Agents' opinions") +
-    ylab("Average of neighbours' opinions") +
-    scale_x_continuous(limits = 0:1, expand = rep(0, 4)) +
-    scale_y_continuous(limits = 0:1, expand = rep(0, 4)) +
-    theme(
-      legend.position = ifelse(leg, "right", "none"),
-      legend.key = element_rect(
-        fill = paletteer_c("grDevices::Lajolla", 20, -1)[[2]]
-      ),
-      axis.title = element_text(size = 10)
-    )
-  p <- ggMarginal(p0, type = "densigram")
-  return(p)
+  # leg <- dens.fun()
+  dens.fun(tmp, leg = leg, point = point, alpha = 1)
+  # p0 <- ggplot(tmp, aes(x = agent, y = neighbours)) +
+  #   geom_density2d_filled(adjust = .5, bins = 20) +
+  #   scale_fill_manual(
+  #     values = paletteer_c("grDevices::Lajolla", 20, -1),
+  #     guide = "none"
+  #   ) +
+  #   new_scale_colour() +
+  #   geom_point(
+  #     aes(x = agent, y = neighbours, colour = echo),
+  #     tmp,
+  #     size = .25
+  #   ) +
+  #   scale_colour_manual(
+  #     values = setNames(
+  #       paletteer_c("ggthemes::Green-Blue Diverging", 5)[2:4],
+  #       c("Anti-Science", "Neither", "Pro-Science")
+  #     ),
+  #     guide = guide_legend(
+  #       override.aes = list(size=2),
+  #       title = "Echo Chamber\nMembership"
+  #     )
+  #   ) +
+  #   theme_bw() +
+  #   xlab("Agents' opinions") +
+  #   ylab("Average of neighbours' opinions") +
+  #   scale_x_continuous(limits = 0:1, expand = rep(0, 4)) +
+  #   scale_y_continuous(limits = 0:1, expand = rep(0, 4)) +
+  #   theme(
+  #     legend.position = ifelse(leg, "right", "none"),
+  #     legend.key = element_rect(
+  #       fill = paletteer_c("grDevices::Lajolla", 20, -1)[[2]]
+  #     ),
+  #     axis.title = element_text(size = 10)
+  #   )
+  # p <- ggMarginal(p0, type = "densigram")
+  # return(p)
 }
 
 # Select simulations -----------------------------------------------------------
 # mean_op0 <- readRDS(file.path("results", paste0(model, "_r.rds")))$opinion$mean
+results <- readRDS(file.path("results", paste0(model, "_r.rds")))
 mean_op0 <- results$opinion$mean
 mean_op <- mean_op0[nrow(mean_op0), ]
 mixed_sel <- names(mean_op)[
@@ -219,7 +197,8 @@ V(anti$g)$color <- anti$opinion1
 
 # Create figures ---------------------------------------------------------------
 leg1 <- get_legend(fig.fun(mixed$g, TRUE))
-leg2 <- get_legend(dens.fun(mixed, TRUE))
+leg2 <- get_legend(dens.fun2(mixed, TRUE))
+fig_mixed <- dens.fun2(mixed, point = FALSE)
 fig_network <- plot_grid(
   leg1,
   plot_grid(
@@ -228,7 +207,7 @@ fig_network <- plot_grid(
     labels = c("A", "C", "E", "G")
   ),
   plot_grid(
-    dens.fun(begin), dens.fun(pros), dens.fun(anti), dens.fun(mixed),
+    dens.fun2(begin), dens.fun2(pros), dens.fun2(anti), dens.fun2(mixed),
     ncol = 1,
     labels = c("B", "D", "F", "H")
   ),
@@ -246,7 +225,6 @@ fig_network <- plot_grid(
 #     layout_matrix = rbind(c(NA, 1, 2, NA), c(7, 3, 4, 8), c(NA, 5, 6, NA))
 #   )
 # }
-fig_mixed <- list(network = fig.fun(mixed$g), density = dens.fun(mixed))
 
 # Remove unneeded large objects (slows things when in memory)
 rm(anti, pros, mixed)

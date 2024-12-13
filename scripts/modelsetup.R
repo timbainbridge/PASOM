@@ -125,7 +125,7 @@ if (run0) {
         p11 = p10, gma = gma0, at = at0, aa = aa0
       )
     },
-    mc.cores = 12, mc.set.seed = FALSE
+    mc.cores = 8, mc.set.seed = FALSE
   )
   names(output) <- paste0("iter", seq_along(output))
 
@@ -147,10 +147,12 @@ if (run0) {
   saveRDS(functions1, file.path("output", "functions.rds"))
   
   # Produce aggregate data -----------------------------------------------------
+  print("Aggregated output")
   source(file.path("scripts", "output_s.R"))
   saveRDS(results, file.path("results", paste0(model, "_r.rds")))
   
   # Produce model figures ------------------------------------------------------
+  print("Time series plot")
   source(file.path("scripts", "results_s.R"))
   saveRDS(plots, file.path("plots", paste0(model, "_p.rds")))
   ggsave(
@@ -165,6 +167,7 @@ if (run0) {
   #     width = 6, height = 7.5, dpi = 450
   #   )
   # }
+  print("Network and neigbours plot")
   source(file.path("scripts", "results_s2.R"))
   # Save figures
   ggsave(
@@ -173,10 +176,35 @@ if (run0) {
     width = 3000, height = 3500, units = "px"
   )
   saveRDS(fig_mixed, file.path("plots", paste0(model, "_mixed.rds")))
-  # if (model == "base") {
-  #   ggsave(
-  #     file.path("plots", "Figure2.eps"), plot = fig_network,
-  #     width = 6, height = 7.5, dpi = 450
-  #   )
-  # }
+  if (model == "base") {
+    ggsave(
+      file.path("plots", "Figure2.eps"), plot = fig_network,
+      width = 6, height = 7.5, dpi = 450
+    )
+  }
+} else {
+  # If the model ran but outputs were not produced.
+  if (!file.exists(file.path("results", paste0(model, "_r.rds")))) {
+    print("Aggregated output")
+    source(file.path("scripts", "output_s.R"))
+    saveRDS(results, file.path("results", paste0(model, "_r.rds")))
+  }
+  if (!file.exists(file.path("plots", paste0(model, "_p.rds")))) {
+    print("Time series plot")
+    source(file.path("scripts", "results_s.R"))
+    saveRDS(plots, file.path("plots", paste0(model, "_p.rds")))
+  }
+  if (
+    !file.exists(file.path("plots", paste0(model, "_network.png"))) |
+    !file.exists(file.path("plots", paste0(model, "_mixed.rds")))
+  ) {
+    print("Network and neigbours plot")
+    source(file.path("scripts", "results_s2.R"))
+    ggsave(
+      file.path("plots", paste0(model, "_network.png")),
+      plot = fig_network,
+      width = 3000, height = 3500, units = "px"
+    )
+    saveRDS(fig_mixed, file.path("plots", paste0(model, "_mixed.rds")))
+  }
 }
