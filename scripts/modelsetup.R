@@ -181,6 +181,7 @@ if (run0) {
       file.path("plots", "Figure2.eps"), plot = fig_network,
       width = 6, height = 7.5, dpi = 450
     )
+    saveRDS(leg2, file.path("plots", "legend.rds"))
   }
 } else {
   # If the model ran but outputs were not produced.
@@ -206,5 +207,12 @@ if (run0) {
       width = 3000, height = 3500, units = "px"
     )
     saveRDS(fig_mixed, file.path("plots", paste0(model, "_mixed.rds")))
+    if (model == "base") {
+      ggsave(
+        file.path("plots", "Figure2.eps"), plot = fig_network,
+        width = 6, height = 7.5, dpi = 450
+      )
+      saveRDS(leg2, file.path("plots", "legend.rds"))
+    }
   }
 }

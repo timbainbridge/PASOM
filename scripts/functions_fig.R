@@ -6,10 +6,21 @@
 #
 ################################################################################
 
+# Libraries required for functions ---------------------------------------------
+pkgs <- c(
+  "ggplot2"
+  , "grid"  # For is.grob()
+  , "ggnewscale"  # For different colours in density plots.
+  , "cowplot"     # For axis histograms
+  , "paletteer"  # For colour palettes
+  , "igraph"       # For networks
+)
+sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
+
 # Functions to create figures --------------------------------------------------
 
 # For density plot
-dens.fun <- function(i, leg = FALSE, point = TRUE, alpha = 1) {
+dens.fun <- function(i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE) {
   p0 <- ggplot(i, aes(x = agent, y = neighbours)) +
     geom_density2d_filled(adjust = .5, bins = 20) +
     scale_fill_manual(
@@ -37,19 +48,23 @@ dens.fun <- function(i, leg = FALSE, point = TRUE, alpha = 1) {
         )
       )
   }
-  p <- p0 +
+  p1 <- p0 +
     theme_bw() +
-    xlab("Agents' opinions") +
-    ylab("Average of neighbours' opinions") +
     scale_x_continuous(limits = 0:1, expand = rep(0, 4)) +
     scale_y_continuous(limits = 0:1, expand = rep(0, 4)) +
     theme(
-      legend.position = ifelse(leg, "right", "none"),
+      legend.position = if (leg) "right" else "none",
       legend.key = element_rect(
         fill = paletteer_c("grDevices::Lajolla", 20, -1)[[2]]
       ),
       axis.title = element_text(size = 10)
     )
+  if (labs0) {
+    p <- p1 +
+      labs(x = "Agents' opinions", y = "Average of neighbours' opinions")
+  } else {
+    p <- p1 + labs(x = NULL, y = NULL)
+  }
   p_xm <- axis_canvas(p, axis = "x") +
     geom_histogram(
       data = i,
@@ -97,5 +112,35 @@ fig.fun <- function(g, leg = FALSE) {
       labels = 0:2*.5
     ) +
     theme_void() +
-    theme(legend.position = ifelse(leg, "left", "none"))
+    theme(legend.position = ifelse(leg, "right", "none"))
+}
+
+# Temporary fix to cowplot's get_legend
+# Issue reported at and (modified) solution from:
+# https://github.com/wilkelab/cowplot/issues/202
+get_legend2 <- function(plot, legend = NULL) {
+  if (is.ggplot(plot)) {
+    gt <- ggplotGrob(plot)
+  } else {
+    if (is.grob(plot)) {
+      gt <- plot
+    } else {
+      stop("Plot object is neither a ggplot nor a grob.")
+    }
+  }
+  pattern <- "guide-box"
+  if (!is.null(legend)) {
+    pattern <- paste0(pattern, "-", legend)
+  }
+  indices <- grep(pattern, gt$layout$name)
+  not_empty <- !vapply(
+    gt$grobs[indices],
+    inherits, what = "zeroGrob",
+    FUN.VALUE = logical(1)
+  )
+  indices <- indices[not_empty]
+  if (length(indices) > 0) {
+    return(gt$grobs[[indices[1]]])
+  }
+  return(NULL)
 }

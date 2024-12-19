@@ -44,7 +44,7 @@ source(file.path("scripts", "functions_fig.R"))
 #   # +
 #   #   ggtitle(paste0("(", i, ")"))
 # }
-dens.fun2 <- function(i, leg = FALSE, point = TRUE, alpha = 1) {
+dens.fun2 <- function(i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE) {
   tmp0 <- sapply(
     adjacent_vertices(i$g, V(i$g)$name),
     function(x) i$opinion1[V(i$g) %in% x] |> mean()
@@ -58,49 +58,14 @@ dens.fun2 <- function(i, leg = FALSE, point = TRUE, alpha = 1) {
       labels = c("Anti-Science", "Neither", "Pro-Science")
     )
   )
-  # leg <- dens.fun()
-  dens.fun(tmp, leg = leg, point = point, alpha = 1)
-  # p0 <- ggplot(tmp, aes(x = agent, y = neighbours)) +
-  #   geom_density2d_filled(adjust = .5, bins = 20) +
-  #   scale_fill_manual(
-  #     values = paletteer_c("grDevices::Lajolla", 20, -1),
-  #     guide = "none"
-  #   ) +
-  #   new_scale_colour() +
-  #   geom_point(
-  #     aes(x = agent, y = neighbours, colour = echo),
-  #     tmp,
-  #     size = .25
-  #   ) +
-  #   scale_colour_manual(
-  #     values = setNames(
-  #       paletteer_c("ggthemes::Green-Blue Diverging", 5)[2:4],
-  #       c("Anti-Science", "Neither", "Pro-Science")
-  #     ),
-  #     guide = guide_legend(
-  #       override.aes = list(size=2),
-  #       title = "Echo Chamber\nMembership"
-  #     )
-  #   ) +
-  #   theme_bw() +
-  #   xlab("Agents' opinions") +
-  #   ylab("Average of neighbours' opinions") +
-  #   scale_x_continuous(limits = 0:1, expand = rep(0, 4)) +
-  #   scale_y_continuous(limits = 0:1, expand = rep(0, 4)) +
-  #   theme(
-  #     legend.position = ifelse(leg, "right", "none"),
-  #     legend.key = element_rect(
-  #       fill = paletteer_c("grDevices::Lajolla", 20, -1)[[2]]
-  #     ),
-  #     axis.title = element_text(size = 10)
-  #   )
-  # p <- ggMarginal(p0, type = "densigram")
-  # return(p)
+  dens.fun(tmp, leg = leg, point = point, alpha = alpha, labs0 = labs0)
 }
 
 # Select simulations -----------------------------------------------------------
 # mean_op0 <- readRDS(file.path("results", paste0(model, "_r.rds")))$opinion$mean
-results <- readRDS(file.path("results", paste0(model, "_r.rds")))
+if (!exists("results")) {
+  results <- readRDS(file.path("results", paste0(model, "_r.rds")))
+}
 mean_op0 <- results$opinion$mean
 mean_op <- mean_op0[nrow(mean_op0), ]
 mixed_sel <- names(mean_op)[
@@ -196,9 +161,9 @@ V(anti$g)$color <- anti$opinion1
 # rm(tmp0, tmp)
 
 # Create figures ---------------------------------------------------------------
-leg1 <- get_legend(fig.fun(mixed$g, TRUE))
-leg2 <- get_legend(dens.fun2(mixed, TRUE))
-fig_mixed <- dens.fun2(mixed, point = FALSE)
+leg1 <- fig.fun(mixed$g, TRUE) |> get_legend2()
+leg2 <- dens.fun2(mixed, TRUE) |> get_legend2()
+fig_mixed <- dens.fun2(mixed, point = FALSE, labs0 = FALSE)
 fig_network <- plot_grid(
   leg1,
   plot_grid(

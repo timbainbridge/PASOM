@@ -20,8 +20,9 @@ pkgs <- list(
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
 
 # Load results -----------------------------------------------------------------
-
-# results <- readRDS(file.path("results", paste0(model, "_r.rds")))
+if (!exists("results")) {
+  results <- readRDS(file.path("results", paste0(model, "_r.rds")))
+}
 
 # Values at final round --------------------------------------------------
 echo1 <- results$echo$echo1 * 100  # as percentage

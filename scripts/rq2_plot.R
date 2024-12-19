@@ -7,20 +7,15 @@
 #
 ################################################################################
 
-# WARNING: Slow to run
-
 # Setup ------------------------------------------------------------------------
 
 # Load packages
 pkgs <- list(
-  "igraph"       # For networks
-  , "ggplot2"    # For all the figures
-  , "paletteer"  # For colour palettes
+  "ggplot2"    # For all the figures
   # , "ggpubr"     # For ggarrange()  # Does not work with ggMarginal()
   # , "ggExtra"    # For ggMarginal()  # Doesn't work with expand. F$%#$%k!
   # , "patchwork"  # Alternative for ggpubr  # Bug in guides = "collect"
   # , "gridExtra"  # Another alternative to ggarrange()
-  , "ggnewscale"  # For different colours in density plots.
   , "cowplot"     # For plot_grid()  (4th time lucky?)
   # , "ggside"      # Same issue as ggExtra
   , "grid"        # For textGrob()
@@ -32,7 +27,7 @@ source(file.path("scripts", "functions_fig.R"))
 
 # Load data --------------------------------------------------------------------
 # parset <- list(bt = c(1, .5, .1, .05, 0), gma = c(.2, .5, 1, 2))
-bt <- c(1, .5, .1, .05, 0, -.05, -.5)
+bt <- c(1.25, .5, .1, .05, 0, -.05, -.5)
 stc <- c(1, 5, 40)
 # rq2_df <- lapply(
 #   setNames(bt, nm = paste0("bt_", bt)),
@@ -69,7 +64,7 @@ rq2_p <- lapply(
     )
   }
 )
-# leg <- rq2_df[[1]][[1]], leg = TRUE) |> get_legend()
+leg <- readRDS(file.path("plots", "legend.rds"))
 # rq2_p <- lapply(rq2_df, function(m) lapply(m, dens.fun, alpha = .05))
 p <- plot_grid(
   plotlist = c(
@@ -90,7 +85,7 @@ p <- plot_grid(
           plotlist = c(
             list(
               textGrob(
-                bquote(c["T"] == .(x * 1.25)), gp = gpar(fontface = "bold")
+                bquote(c["T"] == .(x)), gp = gpar(fontface = "bold")
               )
             ),
             rq2_p[[paste0("bt_", x)]]
