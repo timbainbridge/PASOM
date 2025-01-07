@@ -20,9 +20,7 @@ pkgs <- list(
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
 
 # Load results -----------------------------------------------------------------
-if (!exists("results")) {
-  results <- readRDS(file.path("results", paste0(model, "_r.rds")))
-}
+results <- readRDS(file.path("results", paste0(model, "_r.rds")))
 
 # Values at final round --------------------------------------------------
 echo1 <- results$echo$echo1 * 100  # as percentage
@@ -32,6 +30,7 @@ echo2 <- echo1[nrow(echo1), ] + echo0[nrow(echo0), ]
 opm0 <- results$opinion$mean
 opm <- opm0[nrow(opm0), ]
 # lmda <- results$lambda
+rm(results)
 
 # M over time ------------------------------------------------------------------
 
@@ -56,7 +55,7 @@ mplot <-
     1:5*.2-.1,
     0:5*.2,
     limits = c(0, 1),
-    expand = c(.02, .02)
+    expand = c(2, 2)
   ) +
   labs(x = "Round", colour = "% agents in\nanti-science\nEC at\nfinal round") +
   theme_bw()

@@ -17,9 +17,9 @@ pkgs <- c(
 )
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
 
-# Functions to create figures --------------------------------------------------
+# Functions to create figures ##################################################
 
-# For density plot
+# For density plot -------------------------------------------------------------
 dens.fun <- function(i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE) {
   p0 <- ggplot(i, aes(x = agent, y = neighbours)) +
     geom_density2d_filled(adjust = .5, bins = 20) +
@@ -84,8 +84,24 @@ dens.fun <- function(i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE) {
   insert_xaxis_grob(p, p_xm, position = "top") |>
     insert_yaxis_grob(p_ym, position = "right")
 }
+dens.fun2 <- function(i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE) {
+  tmp0 <- sapply(
+    adjacent_vertices(i$g, V(i$g)$name),
+    function(x) i$opinion1[V(i$g) %in% x] |> mean()
+  )
+  tmp <- data.frame(
+    agent = i$opinion1,
+    neighbours = tmp0,
+    echo = factor(
+      i$echo,
+      levels = -1:1,
+      labels = c("Anti-Science", "Neither", "Pro-Science")
+    )
+  )
+  dens.fun(tmp, leg = leg, point = point, alpha = alpha, labs0 = labs0)
+}
 
-# For network graph
+# For network graph ------------------------------------------------------------
 fig.fun <- function(g, leg = FALSE) {
   set.seed(0)  # For layout_nicely()
   g_coord <- data.frame(agent = V(g)$name,
@@ -115,7 +131,7 @@ fig.fun <- function(g, leg = FALSE) {
     theme(legend.position = ifelse(leg, "right", "none"))
 }
 
-# Temporary fix to cowplot's get_legend
+# Temporary fix to cowplot's get_legend ----------------------------------------
 # Issue reported at and (modified) solution from:
 # https://github.com/wilkelab/cowplot/issues/202
 get_legend2 <- function(plot, legend = NULL) {
