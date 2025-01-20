@@ -55,7 +55,7 @@ mplot <-
     1:5*.2-.1,
     0:5*.2,
     limits = c(0, 1),
-    expand = c(2, 2)
+    expand = c(.02, .02)
   ) +
   labs(x = "Round", colour = "% agents in\nanti-science\nEC at\nfinal round") +
   theme_bw()

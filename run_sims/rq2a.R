@@ -8,7 +8,7 @@ source(file.path("scripts", "default_objects.R"))
 gma0 <- 2  # Allow random connections to be with anyone
 cx <- c(1, .5, .1, 0)
 stc <- c(1, 5, 40)
-mu_0 <- c(500, 750, 2000)
+mu_0 <- c(500, 750, 2500)
 stcon0_d <- stcon0
 
 # Object changes from defaults for the current simulations
@@ -24,7 +24,7 @@ for (m in cx) {
     
     # Model name
     model <- paste0("cx_", m, "_stc_", stc[n])
-    print(model)
+    message(model)
     
     # Run
     source(file.path("scripts", "modelsetup.R"))

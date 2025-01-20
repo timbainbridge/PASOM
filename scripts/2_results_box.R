@@ -75,9 +75,11 @@ results2 <- sapply(
     panti <- (tmp$opinion$final < .5) |> colMeans()
     homophily <- tmp$homophily
     sdop <- tmp$opinion$sd[rnd, ]
-    list(echo1 = echo1, echo10 = echo10, echo0 = echo0, echo00 = echo00,
-         echo2 = echo2, echo20 = echo20, opm = opm, opm0 = opm0,
-         homophily = homophily, sd = sdop, ppro = ppro, panti = panti)
+    list(
+      echo1 = echo1, echo10 = echo10, echo0 = echo0, echo00 = echo00,
+      echo2 = echo2, echo20 = echo20, opm = opm, opm0 = opm0,
+      homophily = homophily, sd = sdop, ppro = ppro, panti = panti
+    )
   },
   simplify = FALSE
 )
@@ -121,31 +123,33 @@ e0data20$cx = e0data20$cx |> sprintf(fmt = "%0.1f")
 
 # Pro-science echo chambers ---------------------------------------------------
 e1data2 <- cbind(
-  do.call(rbind,
-          sapply(results2, function(x) x$echo1, simplify = FALSE)),
+  do.call(rbind, sapply(results2, function(x) x$echo1, simplify = FALSE)),
   cx = 4:0*.5
-) |> data.frame()
+) |>
+  data.frame()
 e1data2$cx <- e1data2$cx |> sprintf(fmt = "%0.1f")
 e1data20 <- cbind(
   melt(sapply(results2, function(x) x$echo10) |> data.frame()),
   iter = rep(1:200, 5),
   cx = rep(4:0*.5, each = 200)
-) |> data.frame()
+) |>
+  data.frame()
 names(e1data20)[names(e1data20) == "value"] <- "mean"
 e1data20$cx = e1data20$cx |> sprintf(fmt = "%0.1f")
 
 # Any echo chamber -------------------------------------------------------------
 edata2 <- cbind(
-  do.call(rbind,
-          sapply(results2, function(x) x$echo2, simplify = FALSE)),
+  do.call(rbind, sapply(results2, function(x) x$echo2, simplify = FALSE)),
   cx = 4:0*.5
-) |> data.frame()
+) |>
+  data.frame()
 edata2$cx <- edata2$cx |> sprintf(fmt = "%0.1f")
 edata20 <- cbind(
   melt(sapply(results2, function(x) x$echo20) |> data.frame()),
   iter = rep(1:200, 5),
   cx = rep(4:0*.5, each = 200)
-) |> data.frame()
+) |>
+  data.frame()
 names(edata20)[names(edata20) == "value"] <- "mean"
 edata20$cx = edata20$cx |> sprintf(fmt = "%0.1f")
 
@@ -155,20 +159,22 @@ edata20$cx = edata20$cx |> sprintf(fmt = "%0.1f")
 mboxplot <-
   ggplot(mdata20, aes(x = cx, y = mean)) +
   geom_boxplot(alpha = 0) +
-  geom_point(aes(x = cx, y = mean, colour = cx)
-             , position = position_jitterdodge(jitter.width = .1)) +
+  geom_point(
+    aes(x = cx, y = mean, colour = cx),
+    position = position_jitterdodge(jitter.width = .1)
+  ) +
   scale_colour_manual(
     values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)
   ) +
   labs(x = bquote(c[x]), colour = bquote(c[x])) +
-  scale_y_continuous("Mean opinion",
-                     0:5*.2,
-                     0:4*.2+.1) +
+  scale_y_continuous("Mean opinion", 0:5*.2, 0:4*.2+.1) +
   coord_cartesian(c(.5, 5.5), c(0, 1), FALSE) +
   theme_bw() +
-  theme(text = element_text(size = 10),
-        plot.margin = unit(c(.5, .5, .5, .5), "cm"),
-        legend.position = "none") +
+  theme(
+    text = element_text(size = 10),
+    plot.margin = unit(c(.5, .5, .5, .5), "cm"),
+    legend.position = "none"
+  ) +
   ggtitle("(A)")
 mboxplot
 

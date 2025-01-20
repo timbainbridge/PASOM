@@ -8,9 +8,7 @@ source(file.path("scripts", "default_objects.R"))
 gma0 <- 2  # Allow random connections to be with anyone
 bt <- c(1.25, .5, .1, 0, -.1, -.25, -.5)
 stc <- c(1, 5, 40)
-mu_0 <- c(500, 750, 2000)
-# btp0_d <- btp0
-# btg0_d <- btg0
+mu_0 <- c(500, 750, 2500)
 stcon0_d <- stcon0
 
 # Object changes from defaults for the current simulations
@@ -27,7 +25,7 @@ for (m in bt) {
     
     # Model name
     model <- paste0("bt_", m, "_stc_", stc[n])
-    print(model)
+    message(model)
     
     # Run
     source(file.path("scripts", "modelsetup.R"))

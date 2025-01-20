@@ -21,11 +21,14 @@ source(file.path("scripts", "default_params.R"))
 t_tests0 <- sapply(
   results[-length(results)],
   function(y) {
-    op <- t.test(y$opinion$mean[rounds0, ],
-                   results$cx0$opinion$mean[rounds0, ],
-                   conf.int = TRUE)
-    e0 <- t.test(y$echo$echo0[rounds0, ], results$cx0$echo$echo0[rounds0, ],
-                   conf.int = TRUE)
+    op <- t.test(
+      y$opinion$mean[rounds0, ], results$cx0$opinion$mean[rounds0, ],
+      conf.int = TRUE
+    )
+    e0 <- t.test(
+      y$echo$echo0[rounds0, ], results$cx0$echo$echo0[rounds0, ],
+      conf.int = TRUE
+    )
     e <- t.test(
       y$echo$echo0[rounds0, ] + y$echo$echo1[rounds0, ],
       results$cx0$echo$echo0[rounds0, ] + results$cx0$echo$echo1[rounds0, ],

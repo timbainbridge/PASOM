@@ -8,7 +8,7 @@ source(file.path("scripts", "default_objects.R"))
 gma0 <- 2  # Allow random connections to be with anyone
 cx <- c(.5, .1, 0)
 bt <- c(.5, .1, 0, -.1, -.25, -.5)
-mu_0 <- 2000
+mu0 <- 2500
 stcon0 <- 40 * 25
 
 # Object changes from defaults for the current simulations
@@ -16,7 +16,8 @@ stcon0 <- 40 * 25
 
 # Run simulations
 for (m in bt) {
-  bt0 <- m
+  btp0 <- m
+  btg0 <- .8 * m
   
   for (n in cx) {
     cx0 <- n

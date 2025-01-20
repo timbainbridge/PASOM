@@ -91,17 +91,8 @@ fun.a <- function(
       (agents1$U1 > 0 | agents1$U0 > 0) & (abs(agents1$U1 - agents1$U0) > u)
     ]
     pub <- see[see %fin% share1]
-    #   (agents1$U1[agents1$id %fin% see] > 0 |
-    #      agents1$U0[agents1$id %fin% see] > 0) &
-    #     abs(
-    #       agents1$U1[agents1$id %fin% see] - agents1$U0[agents1$id %fin% see]
-    #     ) > u
-    # ]
   }
   if (length(pub) != 0) {
-    # share1 <- agents1$id[
-    #   (agents1$U1 > 0 | agents1$U0 > 0) & (abs(agents1$U1 - agents1$U0) > u)
-    # ]
     # Of those who will share, who are connected to each other?
     g3 <- delete_vertices(g1, agents1$id[!agents1$id %fin% share1])
     # Of those who will share, who are connected to an original sharer?
@@ -268,7 +259,8 @@ fun.a <- function(
   DKi0 <- Ki0 - K
   
   # Agents disconnect from disliked connections --------------------------------
-  if (length(pub) > 1) {  # if pub = 1 then it would be constructive.
+  # if share == 1 then it would be constructive == No disconnections.
+  if (length(share) > 1) {
     txsh1 <- share[styp == "T1"]
     txsh0 <- share[styp == "T0"]
     # Find disconnections, disconnect from pro-science
@@ -321,7 +313,8 @@ fun.a <- function(
     txsh0 <- character()
   }
   # Step 6: Agents form new connections ----------------------------------------
-  if (length(pub) > 0) {
+  # if share == 1, then there's no one for that 1 agent to connect to.
+  if (length(share) > 1) {
     ash1 <- styp[share][styp[share] == "A1"] |> names()
     ash0 <- styp[share][styp[share] == "A0"] |> names()
     nccand01 <- agentsout$id[
@@ -592,16 +585,7 @@ fun.b <- function(g0, pers0,
       adv0 <- sapply(adjacent_vertices(g, out$agents$id), length)
       adv <- names(adv0[adv0 <= 1])
     }
-    # # Step 8: New connections if none ------------------------------------------
-    # compon <- components(g)
-    # while (1 %fin% compon$csize) {
-    #   comord <- compon$csize |> order()
-    #   edgesel0 <- compon$membership[compon$membership == comord[1]] |> names()
-    #   edgesel1 <- sample(out$agents$id[!out$agents$id == edgesel0], 1)
-    #   g <- g + edge(c(edgesel0, edgesel1))
-    #   compon <- components(g)
-    # }
-    # Echo chamber membership
+    # Round by round outcome: Echo chamber membership --------------------------
     op <- ifelse(out$agents$ps >= .6, 1, ifelse(out$agents$ps <= .4, -1, 0))
     echo00 <- mapply(
       function(x, y) {
