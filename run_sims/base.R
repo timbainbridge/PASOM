@@ -10,7 +10,7 @@ source(file.path("scripts", "default_objects.R"))
 # Object changes from defaults for the current simulations
 # None for this sim
 
-# Input data
+# Model name
 model <- "base"
 
 # Run simulations

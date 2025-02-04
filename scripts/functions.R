@@ -255,49 +255,70 @@ fun.a <- function(
   #   (1 / (pa0 + cb))
   Ki0 <- ((bag * (1-agentsout$ps)) / ((btg * pt0) + ck)) - (1 / (pa0 + cb))
   # Calculate optimal number of connections
+  
+  # Some optimisation would be possible here. That is, we only need to consider
+  # DKiI for agents who share in favour of I during the round.
+  
   DKi1 <- Ki1 - K
   DKi0 <- Ki0 - K
   
   # Agents disconnect from disliked connections --------------------------------
-  # if share == 1 then it would be constructive == No disconnections.
-  if (length(share) > 1) {
+  if (length(pub) > 0) {
+    # Who shared constructively and toxically for each position?
+    ash1 <- styp[share][styp[share] == "A1"] |> names()
+    ash0 <- styp[share][styp[share] == "A0"] |> names()
     txsh1 <- share[styp == "T1"]
     txsh0 <- share[styp == "T0"]
     # Find disconnections, disconnect from pro-science
+    # At least one toxic share against pro-science corresponding to someone with
+    # DKi1 <= -1.
     if (sum(info$at1 > 0 & DKi1 <= -1) > 0) {
-      tc1 <- agentsout$id[info$at1 > 0 & DKi1 <= -1]
-      if (length(tc1) == 1) {
-        tmp <- txsh1[txsh1 %fin% neighbors(g1, tc1)$name]
-        tc2 <- sample(tmp, 1)
+      # Who would like fewer toxic interaction from the pro-science?
+      tc10 <- agentsout$id[info$at1 > 0 & DKi1 <= -1]
+      if (sum(tc10 %fin% ash1) > 0) {
+        # Shared in favour of pro-science and would like fewer toxic interactions.
+        # This avoids anti-science disconnecting from toxic anti-science.
+        tc1 <- tc10[tc10 %fin% ash1]
+        if (length(tc1) == 1) {
+          tmp <- txsh1[txsh1 %fin% neighbors(g1, tc1)$name]
+          tc2 <- sample(tmp, 1)
+        } else {
+          tc2 <- sapply(
+            adjacent_vertices(g1, tc1),
+            function(x) {
+              tmp <- txsh1[txsh1 %fin% x$name]
+              sample(tmp, 1)
+            }
+          )
+        }
+        txcon1 <- cbind(tc1, tc2)
       } else {
-        tc2 <- sapply(
-          adjacent_vertices(g1, tc1),
-          function(x) {
-            tmp <- txsh1[txsh1 %fin% x$name]
-            sample(tmp, 1)
-          }
-        )
+        txcon1 <- character()
       }
-      txcon1 <- cbind(tc1, tc2)
     } else {
       txcon1 <- character()
     }
     # Find disconnections, disconnect from anti-science
     if (sum(info$at0 > 0 & DKi0 <= -1) > 0) {
-      tc1 <- agentsout$id[info$at0 > 0 & DKi0 <= -1]
-      if (length(tc1) == 1) {
-        tmp <- txsh0[txsh0 %fin% neighbors(g1, tc1)$name]
-        tc2 <- sample(tmp, 1)
+      tc10 <- agentsout$id[info$at0 > 0 & DKi0 <= -1]
+      if (sum(tc10 %fin% ash0) > 0) {
+        tc1 <- tc10[tc10 %fin% ash0]
+        if (length(tc1) == 1) {
+          tmp <- txsh0[txsh0 %fin% neighbors(g1, tc1)$name]
+          tc2 <- sample(tmp, 1)
+        } else {
+          tc2 <- sapply(
+            adjacent_vertices(g1, tc1),
+            function(x) {
+              tmp <- txsh0[txsh0 %fin% x$name]
+              sample(tmp, 1)
+            }
+          )
+        }
+        txcon0 <- cbind(tc1, tc2)
       } else {
-        tc2 <- sapply(
-          adjacent_vertices(g1, tc1),
-          function(x) {
-            tmp <- txsh0[txsh0 %fin% x$name]
-            sample(tmp, 1)
-          }
-        )
+        txcon0 <- character()
       }
-      txcon0 <- cbind(tc1, tc2)
     } else {
       txcon0 <- character()
     }
@@ -307,16 +328,9 @@ fun.a <- function(
     } else {
       txconc <- list()
     }
-  } else {
-    txconc <- list()
-    txsh1 <- character()
-    txsh0 <- character()
-  }
-  # Step 6: Agents form new connections ----------------------------------------
-  # if share == 1, then there's no one for that 1 agent to connect to.
-  if (length(share) > 1) {
-    ash1 <- styp[share][styp[share] == "A1"] |> names()
-    ash0 <- styp[share][styp[share] == "A0"] |> names()
+    # Step 6: Agents form new connections --------------------------------------
+    # Agents who desire at least 1 extra connection, who didn't share toxically,
+    # and who saw a post during the round. (nccand = new connection candidates)
     nccand01 <- agentsout$id[
       DKi1 >= 1 & !agentsout$id %fin% c(txsh1, txsh0) & agentsout$id %fin% seen0
     ]
@@ -444,6 +458,9 @@ fun.a <- function(
     pub1 <- styp[pub][styp[pub] == "A1"] |> names()
     pub0 <- styp[pub][styp[pub] == "A0"] |> names()
   } else {
+    txconc <- list()
+    txsh1 <- character()
+    txsh0 <- character()
     ncon2 <- list()
     pub1 <- character()
     pub0 <- character()

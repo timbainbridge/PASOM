@@ -3,14 +3,20 @@
 # Baseline parameter values
 source(file.path("scripts", "default_params.R"))
 
-# Changes for current simulations
-sdi0 <- .2
-sdj0 <- 1 - sdi0
+# Baseline parameter values
+source(file.path("scripts", "default_params.R"))
+source(file.path("scripts", "default_objects.R"))
 
-# Input data
-pers_input <- readRDS(file.path("input", "persi.rds"))
-graph_input <- readRDS(file.path("input", "g0.rds"))
-model_name <- "sdswap_np"
+# Parameter changes from defaults for the current simulations
+sdi0_d <- sdi0
+sdi0 <- sdj0
+sdj0 <- sdi0_d
+
+# Object changes from defaults for the current simulations
+# None
+
+# Model name
+model <- "sdswap"
 
 # Run simulations
-source(file.path("scripts", "modelsetup_np.R"))
+source(file.path("scripts", "modelsetup.R"))

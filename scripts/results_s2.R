@@ -115,3 +115,10 @@ fig_network <- plot_grid(
   ncol = 4,
   rel_widths = c(1, 6, 6, 2)
 )
+if (model == "bt_-0.5_stc_40") {
+  fig_gab_red <- plot_grid(
+    dens.fun2(pros, point = FALSE), dens.fun2(anti, point = FALSE),
+    ncol = 2,
+    labels = "AUTO"
+  )
+}

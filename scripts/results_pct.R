@@ -4,7 +4,8 @@
 #
 ################################################################################
 
-# Load packages ----------------------------------------------------------------
+# Set up -----------------------------------------------------------------------
+# Packages
 pkgs <- list(
   "ggplot2"       # For all the figures
   , "reshape"     # For melt()
@@ -13,6 +14,9 @@ pkgs <- list(
   , "cowplot"     # For plot_grid()
 )
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
+
+# Custom functions
+source(file.path("scripts", "functions_fig.R"))
 
 # Data -------------------------------------------------------------------------
 bt <- c(1.25, .5, .1, 0, -.1, -.25, -.5)
@@ -120,7 +124,8 @@ ebox_d0 <- cbind.data.frame(
   iter = rep(1:200, length(results2)),
   bt = rep(ebox_agg$bt[match(names(results2), rownames(ebox_agg))], each = 200),
   cx = rep(ebox_agg$cx[match(names(results2), rownames(ebox_agg))], each = 200),
-  stc = rep(ebox_agg$stc[match(names(results2), rownames(ebox_agg))], each = 200)
+  stc =
+    rep(ebox_agg$stc[match(names(results2), rownames(ebox_agg))], each = 200)
 )
 
 # Select simulations
@@ -140,9 +145,12 @@ opbox_agg$stc <- factor(opbox_agg$stc, levels = stcn)  # Reorder
 opbox_d0 <- cbind.data.frame(
   melt(sapply(results2, function(x) x$opm0) |> data.frame()),
   iter = rep(1:200, length(results2)),
-  bt = rep(opbox_agg$bt[match(names(results2), rownames(opbox_agg))], each = 200),
-  cx = rep(opbox_agg$cx[match(names(results2), rownames(opbox_agg))], each = 200),
-  stc = rep(opbox_agg$stc[match(names(results2), rownames(opbox_agg))], each = 200)
+  bt =
+    rep(opbox_agg$bt[match(names(results2), rownames(opbox_agg))], each = 200),
+  cx =
+    rep(opbox_agg$cx[match(names(results2), rownames(opbox_agg))], each = 200),
+  stc =
+    rep(opbox_agg$stc[match(names(results2), rownames(opbox_agg))], each = 200)
 )
 
 # Select simulations
@@ -282,26 +290,6 @@ opbox_d_bt <- opbox_d0[grep("bt_.+_stc", opbox_d0$variable), ]
 
 # Figure -----------------------------------------------------------------------
 
-# Function
-box_custom <- function(
-    d, x, y, colour, xlab, clab, ylab, limits = waiver(), pal = NULL
-  ) {
-  ggplot(d, aes(x = {{x}}, y = {{y}}, colour = {{colour}})) +
-    geom_boxplot(outlier.alpha = 0) +
-    geom_point(position = position_jitterdodge(jitter.width = .1)) +
-    scale_colour_manual(
-      values = if (is.null(pal)) {
-        paletteer_c("ggthemes::Sunset-Sunrise Diverging", length({{colour}}), -1)
-      } else pal
-    ) +
-    labs(x = xlab, colour = clab) +
-    scale_y_continuous(
-      ylab, 0:5*20, 0:4*20+10, limits = limits, expand = c(0, 0)
-    ) +
-    theme_bw() +
-    guides(colour = guide_legend(reverse = TRUE))
-}
-
 # Echo chambers
 ebox_p <- box_custom(
   ebox_d, x = cx, y = value, colour = bt,
@@ -357,22 +345,25 @@ opbox_p_all <-
   plot_grid(opbox_p_bt, opbox_p_cx, opbox_p, ncol = 1, labels = "AUTO")
 opbox_p_all
 
-# # Number of shares -------------------------------------------------------------
-# results_sh <- sapply(
-#   models2,
-#   function(x) {
-#     sapply(readRDS(file.path("results", paste0(x, "_r.rds")))$shares, colSums)
-#   },
-#   simplify = FALSE
-# )
-# shdata <- sapply(
-#   results_sh,
-#   function(x) {
-#     tmp <- data.frame(x)
-#     data.frame(tx = tmp$tx11 + tmp$tx10, a = tmp$a11 + tmp$a10)
-#   },
-#   simplify = FALSE
-# )
+# Number of shares -------------------------------------------------------------
+results_sh <- sapply(
+  models2,
+  function(x) {
+    sapply(readRDS(file.path("results", paste0(x, "_r.rds")))$shares, colSums)
+  },
+  simplify = FALSE
+)
+shdata <- sapply(
+  results_sh,
+  function(x) {
+    tmp <- data.frame(x)
+    data.frame(tx = tmp$tx11 + tmp$tx10, a = tmp$a11 + tmp$a10)
+  },
+  simplify = FALSE
+)
+shdata$base$tx |> describe()
+shdata$cx_0.1_stc_40$tx |> describe()
+shdata$bt_0.5_cx_0.5$tx |> describe()
 
 # # Tx - Mean by model -----------------------------------------------------------
 # describe(shdata$base$tx)

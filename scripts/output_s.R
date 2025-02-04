@@ -23,10 +23,12 @@ fround <- sapply(output, function(x) x$final_round)
 lmda <- sapply(output, function(x) (x$lmda == 1) |> colSums())
 
 # Shares by round --------------------------------------------------------------
-shares <- list(a11 = sapply(output, function(x) x$a11 |> colSums()),
-               a10 = sapply(output, function(x) x$a10 |> colSums()),
-               tx11 = sapply(output, function(x) x$tx11 |> colSums()),
-               tx10 = sapply(output, function(x) x$tx10 |> colSums()))
+shares <- list(
+  a11 = sapply(output, function(x) x$a11 |> colSums()),
+  a10 = sapply(output, function(x) x$a10 |> colSums()),
+  tx11 = sapply(output, function(x) x$tx11 |> colSums()),
+  tx10 = sapply(output, function(x) x$tx10 |> colSums())
+)
 
 # Opinion tracking -------------------------------------------------------------
 opinion_stats <- list(
@@ -39,27 +41,27 @@ opinion_stats <- list(
 # Echo chambers? ---------------------------------------------------------------
 echo <- list(
   # echo = sapply(output, function(x) x$echo1 |> colMeans()),
-  echo0 = sapply(output,
-                 function(x) (x$echo == -1) |> colMeans()),
-  echo1 = sapply(output,
-                 function(x) (x$echo == 1) |> colMeans())
+  echo0 = sapply(output, function(x) (x$echo == -1) |> colMeans()),
+  echo1 = sapply(output, function(x) (x$echo == 1) |> colMeans())
 )
 
 # Homophily --------------------------------------------------------------------
 homoph <- mapply(
-  function(x, y) {
-    assortativity(x$g, y, directed = FALSE)
-  },
+  function(x, y) assortativity(x$g, y, directed = FALSE),
   x = output, y = as.data.frame(opinion_stats$final)
 )
 
 # G-Size -----------------------------------------------------------------------
-gsz <- list(start = sapply(output, function(x) x$g0 |> gsize()),
-            end = sapply(output, function(x) x$g |> gsize()))
+gsz <- list(
+  start = sapply(output, function(x) x$g0 |> gsize()),
+  end = sapply(output, function(x) x$g |> gsize())
+)
 
 # Max degree -------------------------------------------------------------------
-mdeg <- list(start = output[[1]]$g0 |> distances() |> max(),
-             end = sapply(output, function(x) x$g |> distances() |> max()))
+mdeg <- list(
+  start = output[[1]]$g0 |> distances() |> max(),
+  end = sapply(output, function(x) x$g |> distances() |> max())
+)
 
 # Remove output object (may cause things to run quicker) -----------------------
 rm(output)

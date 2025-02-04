@@ -13,5 +13,5 @@ if (n_agent0 == 500) {
   if (n_agent0 == 1000) {
     pers0 <- readRDS(file.path("input", "pers20.rds"))
     g0 <- readRDS(file.path("input", "g1000.rds"))
-  } else print(paste("No priors or network for n_agent0 =", n_agent0))
+  } else warning(paste("No priors or network for n_agent0 =", n_agent0))
 }

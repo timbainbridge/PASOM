@@ -35,42 +35,24 @@ rq2_p <- lapply(
     )
   }
 )
-# leg <- readRDS(file.path("plots", "legend.rds"))
-# rq2_p <- lapply(rq2_df, function(m) lapply(m, dens.fun, alpha = .05))
 p0 <- plot_grid(
   plotlist = c(
     list(
       plot_grid(
-        # textGrob(""),
         textGrob("Weak Priors", gp = gpar(fontface = "bold")),
         textGrob("Moderate Priors", gp = gpar(fontface = "bold")),
         textGrob("Strong Priors", gp = gpar(fontface = "bold")),
-        nrow = 1#,
-        # rel_widths = c(1, 4, 4, 4)
+        nrow = 1
       )
     ),
     lapply(
       bt,
-      function(x) {
-        plot_grid(
-          plotlist = c(
-            # list(
-            #   textGrob(
-            #     bquote(c["T"] == .(x)), gp = gpar(fontface = "bold")
-            #   )
-            # ),
-            rq2_p[[paste0("bt_", x)]]
-          ),
-          ncol = 3#4,
-          # rel_widths = c(1, 4, 4, 4)
-        )
-      }
+      function(x) plot_grid(plotlist = c(rq2_p[[paste0("bt_", x)]]), ncol = 3)
     )
   ),
   ncol = 1,
   rel_heights = c(1, rep(10, length(bt)))
 ) |>
-  # plot_grid(leg, rel_widths = c(15, 1))  # Here for when points were included.
   plot_grid(textGrob("Agents' opinions"), nrow = 2, rel_heights = c(50, 1))
 py <- plot_grid(
   plotlist = c(

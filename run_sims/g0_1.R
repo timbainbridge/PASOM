@@ -5,20 +5,11 @@ source(file.path("scripts", "default_params.R"))
 source(file.path("scripts", "default_objects.R"))
 
 # Parameter changes from defaults for the current simulations
-ckc <- c(.8, 1.25)
-ck0_d <- ck0
+# No changes from default, only the graphs changes.
 
 # Object changes from defaults for the current simulations
-# None
+g0 <- readRDS(file.path("input", "g0_1.rds"))
+model <- "g0_1"
 
 # Run simulations
-for (m in ckc) {
-  ck0 <- ck0_d * m
-  
-  # Model name
-  model <- paste0("ck", m)
-  message(model)
-  
-  # Run
-  source(file.path("scripts", "modelsetup.R"))
-}
+source(file.path("scripts", "modelsetup.R"))

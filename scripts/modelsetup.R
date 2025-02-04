@@ -89,27 +89,20 @@ if ((list.files(file.path("output", model)) |> length()) == 0) {
 # Run model --------------------------------------------------------------------
 if (run0) {
   n_agent0 <- length(g0)
-  # output <- list()
-  # for (j in 1:iter0) {
-  #   print(j)
-  #   output[[j]] <- fun.b(
-  #     g0 = g0, pers0 = pers0, iter = iter0, n_agent = n_agent0,
-  #     rounds = rounds0, stcon = stcon0, stcdv = stcdv0, shrpp = shrpp0,
-  #     dt1 = dt0, da1 = da0, sdi1 = sdi0, sdj1 = sdj0,
-  #     bap1 = bap0, btp1 = btp0, ccp1 = ccp0, bsp1 = bsp0,
-  #     bag1 = bag0, btg1 = btg0, ck1 = ck0, cb1 = cb0,
-  #     ths1 = ths0, u1 = u0, cx1 = cx0, nu1 = nu0, mu1 = mu0,
-  #     p11 = p10, gma = gma0, at = at0, aa = aa0
-  #   )
-  # }
+  # Can set mc_cores in run sim file to specify the number to use.
+  # Otherwise 8 will be used (may not work on Windows)
+  if (!exists("mc_cores")) {
+    mc_cores <- 8
+  }
   output <- mclapply(
     1:iter0,
     function(j) {
-      # Setting the seed based on iteration and parameter values should create
-      # different seeds by parameter set so results should not be correlated by
-      # iteration.
-      # Setting `set.seed(j)` may cause results to be correlated by iteration as
-      # each draw for e_j and f_ij should be identical.
+      # Using `set.seed(j)` may have caused results to be correlated by
+      # iteration as each draw for e_j and f_ij should be identical.
+      # Setting the seed based on iteration and parameter values instead means
+      # different seeds are created for each parameter set so results will not
+      # be correlated by iteration.
+      
       # To avoid complication, we have selected enough simulations for
       # comparisons to be made without worrying about identical random draws by
       # parameter sets.
@@ -125,7 +118,7 @@ if (run0) {
         p11 = p10, gma = gma0, at = at0, aa = aa0
       )
     },
-    mc.cores = 8, mc.set.seed = FALSE
+    mc.cores = mc_cores, mc.set.seed = FALSE
   )
   names(output) <- paste0("iter", seq_along(output))
 
@@ -184,11 +177,17 @@ if (run0) {
     )
     saveRDS(leg2, file.path("plots", "legend.rds"))
   }
+  if (model == "bt_-0.5_stc_40") {
+    ggsave2(
+      file.path("plots", "gab_red.png"), plot = fig_gab_red,
+      width = 8, height = 4, dpi = 450
+    )
+  }
   print("Median neighbour plot")
   source(file.path("scripts", "results_s3.R"))
   saveRDS(fig_med, file.path("plots", paste0(model, "_med.rds")))
 } else {
-  # If the model ran but outputs were not produced.
+  # If the model ran previously but outputs were not produced.
   if (!file.exists(file.path("results", paste0(model, "_r.rds")))) {
     print("Aggregated output")
     source(file.path("scripts", "output_s.R"))
@@ -223,6 +222,12 @@ if (run0) {
         width = 6, height = 7.5, dpi = 450
       )
       saveRDS(leg2, file.path("plots", "legend.rds"))
+    }
+    if (model == "bt_-0.5_stc_40") {
+      ggsave2(
+        file.path("plots", "gab_red.png"), plot = fig_gab_red,
+        width = 8, height = 4, dpi = 450
+      )
     }
   }
   if (!file.exists(file.path("plots", paste0(model, "_med.rds")))) {
