@@ -139,30 +139,6 @@ mdata_sup0 <- mapply(
 mdata_sup0$group <-
   factor(mdata_sup0$group, levels = group_names, ordered = TRUE)
 
-# # Anti-science echo chambers ---------------------------------------------------
-# e0data_sup <- do.call(
-#   rbind,
-#   sapply(results_sup, function(x) x$echo0, simplify = FALSE)
-# ) |> data.frame()
-# e0data_sup0 <- cbind(
-#   melt(sapply(results_sup, function(x) x$echo00) |> data.frame()),
-#   iter = rep(1:200, length(model_names)),
-#   simulation = factor(rep(model_names, each = 200), levels = model_names)
-# ) |> data.frame()
-# names(e0data_sup0)[names(e0data_sup0) == "value"] <- "mean"
-# 
-# # Pro-science echo chambers ---------------------------------------------------
-# e1data_sup <- do.call(
-#   rbind,
-#   sapply(results_sup, function(x) x$echo1, simplify = FALSE)
-# ) |> data.frame()
-# e1data_sup0 <- cbind(
-#   melt(sapply(results_sup, function(x) x$echo10) |> data.frame()),
-#   iter = rep(1:200, length(model_names)),
-#   simulation = factor(rep(model_names, each = 200), levels = model_names)
-# ) |> data.frame()
-# names(e1data_sup0)[names(e1data_sup0) == "value"] <- "mean"
-
 # Any echo chamber -------------------------------------------------------------
 edata_sup <- do.call(
   rbind,
@@ -206,44 +182,6 @@ mboxplot <- box_custom2(
 )
 mboxplot
 
-# # Anti-science echo chambers ---------------------------------------------------
-# e0boxplot <-
-#   ggplot(e0data_sup0, aes(x = simulation, y = mean)) +
-#   geom_boxplot(alpha = 0) +
-#   geom_point(aes(x = simulation, y = mean, colour = simulation)
-#              , alpha = .5
-#              , position = position_jitterdodge(jitter.width = .1)) +
-#   labs(x = "Simulation", colour = "Simulation") +
-#   scale_y_continuous("% agents in an anti-science\nEcho Chamber",
-#                      0:5*20,
-#                      0:4*20+10) +
-#   coord_cartesian(ylim = c(0, 100), expand = FALSE) +
-#   theme_bw() +
-#   theme(text = element_text(size = 10),
-#         plot.margin = unit(c(.5, .5, .5, .5), "cm"),
-#         legend.position = "none") +
-#   ggtitle("(A)")
-# e0boxplot
-# 
-# # Pro-science echo chambers ---------------------------------------------------
-# e1boxplot <-
-#   ggplot(e1data_sup0, aes(x = simulation, y = mean)) +
-#   geom_boxplot(alpha = 0) +
-#   geom_point(aes(x = simulation, y = mean, colour = simulation)
-#              , alpha = .5
-#              , position = position_jitterdodge(jitter.width = .1)) +
-#   labs(x = "Simulation", colour = "Simulation") +
-#   scale_y_continuous("% agents in a pro-science\nEcho Chamber",
-#                      0:5*20,
-#                      0:4*20+10) +
-#   coord_cartesian(ylim = c(0, 100), expand = FALSE) +
-#   theme_bw() +
-#   theme(text = element_text(size = 10),
-#         plot.margin = unit(c(.5, .5, .5, .5), "cm"),
-#         legend.position = "none") +
-#   ggtitle("(B)")
-# e1boxplot
-
 # Any echo chamber -------------------------------------------------------------
 eboxplot <- box_custom2(
   edata_sup0, x = simulation, y = value, group = group,
@@ -260,132 +198,8 @@ eboxplot <- box_custom2(
   )
 )
 eboxplot
-#   ggplot(edata_sup0, aes(x = simulation, y = mean)) +
-#   geom_boxplot(outlier.alpha = 0) +
-#   geom_point(aes(x = simulation, y = mean, colour = simulation)
-#              , alpha = .5
-#              , position = position_jitterdodge(jitter.width = .1)) +
-#   labs(x = "Simulation", colour = "Simulation") +
-#   scale_y_continuous("% agents in any\nEcho Chamber",
-#                      0:5*20,
-#                      0:4*20+10) +
-#   coord_cartesian(ylim = c(0, 100), expand = FALSE) +
-#   theme_bw() +
-#   theme(text = element_text(size = 10),
-#         plot.margin = unit(c(.5, .5, .5, .5), "cm"),
-#         legend.position = "none") +
-#   ggtitle("(C)")
-# eboxplot
-#  
-# eboxall <- ggarrange(plotlist = list(e0boxplot, e1boxplot, eboxplot),
-#                      nrow = 3,
-#                      legend = "none")
-# eboxall
-
-# # Number of toxic shares -------------------------------------------------------
-# results_sh_sup <- sapply(
-#   models_sup,
-#   function(x) {
-#     sapply(readRDS(file.path("results", paste0(x, "_r.rds")))$shares, colSums)
-#   },
-#   simplify = FALSE
-# )
-# shdata_sup <- sapply(
-#   results_sh_sup,
-#   function(x) {
-#     tmp <- data.frame(x)
-#     data.frame(tx = tmp$tx11 + tmp$tx10, a = tmp$a11 + tmp$a10)
-#   },
-#   simplify = FALSE
-# )
-
-# # Tx ---------------------------------------------------------------------------
-# txdata_sup <- cbind(
-#   melt(sapply(shdata_sup, function(x) x$tx) |> data.frame()),
-#   iter = rep(1:200, length(model_names)),
-#   simulation = factor(rep(model_names, each = 200), levels = model_names)
-# ) |> data.frame()
-# names(txdata_sup)[names(txdata_sup) == "value"] <- "shares"
-# txplot <-
-#   ggplot(txdata_sup, aes(x = simulation, y = shares)) +
-#   geom_boxplot(notch = TRUE, alpha = 0) +
-#   geom_point(aes(x = simulation, y = shares, colour = simulation)
-#              , alpha = .5
-#              , position = position_jitterdodge(jitter.width = .1)) +
-#   labs(x = "Simulation", y = "Toxic Shares", colour = "Simulation") +
-#   theme_bw() +
-#   theme(text = element_text(size = 10),
-#         plot.margin = unit(c(.5, .5, .5, .5), "cm"),
-#         legend.position = "none") +
-#   ggtitle("(A)")
-# txplot
-# 
-# # A ---------------------------------------------------------------------------
-# adata_sup <- cbind(
-#   melt(sapply(shdata_sup, function(x) x$a) |> data.frame()),
-#   iter = rep(1:200, length(model_names)),
-#   simulation = factor(rep(model_names, each = 200), levels = model_names)
-# ) |> data.frame()
-# names(adata_sup)[names(adata_sup) == "value"] <- "shares"
-# aplot <-
-#   ggplot(adata_sup, aes(x = simulation, y = shares)) +
-#   geom_boxplot(notch = TRUE, alpha = 0) +
-#   geom_point(aes(x = simulation, y = shares, colour = simulation)
-#              , alpha = .5
-#              , position = position_jitterdodge(jitter.width = .1)) +
-#     labs(x = "Simulation", y = "Constructive Shares", colour = "Simulation") +
-#   theme_bw() +
-#   theme(text = element_text(size = 10),
-#         plot.margin = unit(c(.5, .5, .5, .5), "cm"),
-#         legend.position = "none") +
-#   ggtitle("(B)")
-# aplot
-
-# # Combined Tx and A plots ------------------------------------------------------
-# txaplot <- ggarrange(plotlist = list(txplot, aplot),
-#                      nrow = 2,
-#                      legend = "none")
-# txaplot
-# 
-# # SD plot ----------------------------------------------------------------------
-# sddata0 <- do.call(
-#   rbind,
-#   mapply(
-#     function(x, y) {
-#       data.frame(simulation = factor(rep(y, length(x$sd)), levels = y),
-#                  sd = x$sd)
-#     },
-#     x = results_sup, y = model_names, SIMPLIFY = FALSE
-#   )
-# )
-# sdboxplot <-
-#   ggplot(sddata0, aes(x = simulation, y = sd)) +
-#   geom_boxplot(
-#     # notch = TRUE,
-#     alpha = 0
-#   ) +
-#   geom_point(aes(x = simulation, y = sd, colour = simulation)
-#              , alpha = .5
-#              , position = position_jitterdodge(jitter.width = .1)) +
-#   labs(x = "Simulation", colour = "Simulation") +
-#   scale_y_continuous("SD of opinions") +
-#   theme_bw() +
-#   theme(text = element_text(size = 10),
-#         plot.margin = unit(c(.5, .5, .5, .5), "cm"),
-#         legend.position = "none") +
-#   ggtitle("(B)")
-# sdboxplot
-# 
-# msdarrange <- ggarrange(plotlist = list(mboxplot, sdboxplot),
-#                         nrow = 2,
-#                         legend = "none")
-# msdarrange
 
 # Save plots -------------------------------------------------------------------
-# saveRDS(eboxall, file.path("plots", "sup_echo_plot.rds"))
-# saveRDS(txaplot, file.path("plots", "sup_txa_plot.rds"))
-# saveRDS(msdarrange, file.path("plots", "sup_msd_plot.rds"))
-
 ggsave2(
   file.path("plots", "sup_opm_box.pdf"), mboxplot,
   width = 17*1.75, height = 8.5*1.75, units = "cm"

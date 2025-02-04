@@ -138,6 +138,9 @@ if (run0) {
   }
   saveRDS(params, file.path("output", paste0("params_", model, ".rds")))
   saveRDS(functions1, file.path("output", "functions.rds"))
+}
+# Produce results if outputs exist (i.e., if it just ran or ran previously)
+if (!file.exists(file.path("output", paste0("params_", model, ".rds")))) {
   
   # Produce aggregate data -----------------------------------------------------
   print("Aggregated output")
@@ -154,13 +157,13 @@ if (run0) {
     plots,
     width = 3000, height = 3000, units = "px"
   )
-  # if (model == "base") {
-  #   ggsave(
-  #     file.path("plots", "Figure1.eps"),
-  #     plots,
-  #     width = 6, height = 7.5, dpi = 450
-  #   )
-  # }
+  if (model == "base") {
+    ggsave(
+      file.path("plots", "Fig1.eps"),
+      plots,
+      width = 6, height = 6, dpi = 450
+    )
+  }
   print("Network and neigbours plot")
   source(file.path("scripts", "results_s2.R"))
   # Save figures
@@ -169,70 +172,24 @@ if (run0) {
     plot = fig_network,
     width = 3000, height = 3500, units = "px"
   )
-  # saveRDS(fig_mixed, file.path("plots", paste0(model, "_mixed.rds")))
   if (model == "base") {
     ggsave(
-      file.path("plots", "Figure2.eps"), plot = fig_network,
-      width = 6, height = 7.5, dpi = 450
+      file.path("plots", "Fig2.eps"), plot = fig_network,
+      width = 6, height = 7, dpi = 450
     )
     saveRDS(leg2, file.path("plots", "legend.rds"))
   }
   if (model == "bt_-0.5_stc_40") {
     ggsave2(
       file.path("plots", "gab_red.png"), plot = fig_gab_red,
-      width = 8, height = 4, dpi = 450
+      width = 6, height = 3, dpi = 450
+    )
+    ggsave2(
+      file.path("plots", "Fig8.esp"), plot = fig_gab_red,
+      width = 6, height = 3, dpi = 450
     )
   }
   print("Median neighbour plot")
   source(file.path("scripts", "results_s3.R"))
   saveRDS(fig_med, file.path("plots", paste0(model, "_med.rds")))
-} else {
-  # If the model ran previously but outputs were not produced.
-  if (!file.exists(file.path("results", paste0(model, "_r.rds")))) {
-    print("Aggregated output")
-    source(file.path("scripts", "output_s.R"))
-    saveRDS(results, file.path("results", paste0(model, "_r.rds")))
-    rm(results)
-  }
-  if (
-    !file.exists(file.path("plots", paste0(model, "_p.rds"))) |
-    !file.exists(file.path("plots", paste0(model, ".png")))
-  ) {
-    print("Time series plot")
-    source(file.path("scripts", "results_s.R"))
-    saveRDS(plots, file.path("plots", paste0(model, "_p.rds")))
-    ggsave(
-      file.path("plots", paste0(model, ".png")),
-      plots,
-      width = 3000, height = 3000, units = "px"
-    )
-  }
-  if (!file.exists(file.path("plots", paste0(model, "_network.png")))) {
-    print("Network and neigbours plot")
-    source(file.path("scripts", "results_s2.R"))
-    ggsave(
-      file.path("plots", paste0(model, "_network.png")),
-      plot = fig_network,
-      width = 3000, height = 3500, units = "px"
-    )
-    # saveRDS(fig_mixed, file.path("plots", paste0(model, "_mixed.rds")))
-    if (model == "base") {
-      ggsave(
-        file.path("plots", "Figure2.eps"), plot = fig_network,
-        width = 6, height = 7.5, dpi = 450
-      )
-      saveRDS(leg2, file.path("plots", "legend.rds"))
-    }
-    if (model == "bt_-0.5_stc_40") {
-      ggsave2(
-        file.path("plots", "gab_red.png"), plot = fig_gab_red,
-        width = 8, height = 4, dpi = 450
-      )
-    }
-  }
-  if (!file.exists(file.path("plots", paste0(model, "_med.rds")))) {
-    print("Median neighbour plot")
-    source(file.path("scripts", "results_s3.R"))
-    saveRDS(fig_med, file.path("plots", paste0(model, "_med.rds")))
-  }
 }

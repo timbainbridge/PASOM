@@ -172,21 +172,16 @@ box_custom <- function(
     scale_y_continuous(
       ylab, 0:5*20, 0:4*20+10, limits = limits, expand = c(0, 0)
     ) +
-    theme_bw()
-  if (!is.null(d[[{{colour}}]])) {
-    p +
-      scale_colour_manual(
-        values = if (is.null(pal)) {
-          paletteer_c(
-            "ggthemes::Sunset-Sunrise Diverging", length({{colour}}), -1
-          )
-        } else pal
-      ) +
-      labs(x = xlab, colour = clab) +
-      guides(colour = guide_legend(reverse = TRUE))
-  } else {
-    p + labs(x = xlab)
-  }
+    theme_bw() +
+    scale_colour_manual(
+      values = if (is.null(pal)) {
+        paletteer_c(
+          "ggthemes::Sunset-Sunrise Diverging", length({{colour}}), -1
+        )
+      } else pal
+    ) +
+    labs(x = xlab, colour = clab) +
+    guides(colour = guide_legend(reverse = TRUE))
 }
 box_custom2 <- function(
     d, x, y, group, xlab, clab = NULL, ylab, limits = waiver(),
@@ -194,14 +189,13 @@ box_custom2 <- function(
 ) {
   p <- ggplot(d, aes(x = {{group}}, y = {{y}}, colour = {{x}}, dodge = {{x}})) +
     geom_boxplot(outlier.alpha = 0) +
-    # facet_wrap(~{{group}}) +
     geom_point(
       position = position_jitterdodge(jitter.width = .1, dodge.width = .75)
     ) +
     scale_y_continuous(
       ylab,
       0:5*.2*limits[2],
-      0:4*.2*limits[2]+10,
+      0:4*.2*limits[2]+.1*limits[2],
       limits = limits,
       expand = c(0, 0)
     ) +

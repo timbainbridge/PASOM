@@ -98,7 +98,6 @@ if (model == "base") {
 } else {
   leg2 <- readRDS(file.path("plots", "legend.rds"))
 }
-# fig_mixed <- dens.fun2(mixed, point = FALSE, labs0 = FALSE)
 fig_network <- plot_grid(
   leg1,
   plot_grid(

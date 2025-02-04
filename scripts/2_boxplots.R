@@ -1,5 +1,8 @@
 ################ A file to produce boxplots for the paper ######################
 #
+# This file produces Figures 5 and 6 from the paper + an ad hoc comparison of
+# the number of toxic posts for 2 selected parameter sets in the Discussion. 
+# 
 # Copyright CSIRO 2024 under GPL-3.0-or-later.
 #
 ################################################################################
@@ -159,136 +162,7 @@ opbox_d <-
 opbox_d_cx <- opbox_d0[grep("cx_.+_stc", opbox_d0$variable), ]
 opbox_d_bt <- opbox_d0[grep("bt_.+_stc", opbox_d0$variable), ]
 
-# # Figure
-# g_ep <-
-#   ggplot(e_box_d[e_box_d$stc == 40, ], aes(fill = bt, y = mean, x = cx)) +
-#   geom_bar(position = "dodge", stat = "identity", colour = "black") +
-#   geom_errorbar(
-#     aes(ymin = lowert, ymax = uppert), position = position_dodge(.9)
-#   ) +
-#   theme_bw() +
-#   labs(x = bquote(c[X]), y = "% agents in an echo chamber", fill = bquote(c[T])) +
-#   scale_fill_manual(
-#     values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 7, -1)
-#   )
-# # g_ep
-# g_ep2 <-
-#   ggplot(e_box_d[e_box_d$stc == 40, ], aes(fill = cx, y = mean, x = bt)) +
-#   geom_bar(position = "dodge", stat = "identity", colour = "black") +
-#   geom_errorbar(
-#     aes(ymin = lowert, ymax = uppert), position = position_dodge(.9)
-#   ) +
-#   theme_bw() +
-#   xlab(bquote(b[T])) +
-#   ylab("% agents in an echo chamber") +
-#   scale_fill_manual(
-#     values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 4, -1)
-#   )
-# g_ep2
-
-
-# g_ep_bt <-
-#   ggplot(e_box_d_bt, aes(fill = stc, y = mean, x = bt)) +
-#   geom_bar(
-#     position = position_dodge2(reverse = TRUE),
-#     stat = "identity",
-#     colour = "black"
-#   ) +
-#   geom_errorbar(
-#     aes(ymin = lowert, ymax = uppert),
-#     position = position_dodge2(.9, reverse = TRUE)
-#   ) +
-#   theme_bw() +
-#   labs(
-#     x = bquote(c[T]),
-#     y = "% agents in an echo chamber",
-#     fill = "Prior\nstrength"
-#   ) +
-#   scale_fill_manual(
-#     values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 3, -1)
-#   )
-# g_ep_bt
-
-# g_ep_bt2 <-
-#   ggplot(e_box_d_bt, aes(fill = bt, y = mean, x = stc)) +
-#   geom_bar(
-#     position = position_dodge2(),
-#     stat = "identity",
-#     colour = "black"
-#   ) +
-#   geom_errorbar(
-#     aes(ymin = lowert, ymax = uppert),
-#     position = position_dodge2(.9)
-#   ) +
-#   theme_bw() +
-#   labs(
-#     fill = bquote(c[T]),
-#     y = "% agents in an echo chamber",
-#     x = "Prior strength"
-#   ) +
-#   scale_fill_manual(
-#     values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 7, -1) #|>  # Alt = 36
-#       # _[c(1, 6, 9, 11, 13, 24, 36)]
-#   ) +
-#   scale_y_continuous(limits = c(0, 100) , expand = c(0, 0)) +
-#   scale_x_discrete(label = c("Weak", "Moderate", "Strong"))
-# g_ep_bt2
-
-# Select cx
-
-# g_ep_cx <-
-#   ggplot(e_box_d_cx, aes(fill = stc, y = mean, x = cx)) +
-#   geom_bar(
-#     position = position_dodge2(reverse = TRUE),
-#     stat = "identity",
-#     colour = "black"
-#   ) +
-#   geom_errorbar(
-#     aes(ymin = lowert, ymax = uppert),
-#     position = position_dodge2(.9, reverse = TRUE)
-#   ) +
-#   theme_bw() +
-#   labs(
-#     x = bquote(c[X]),
-#     y = "% agents in an echo chamber",
-#     fill = "Prior\nstrength"
-#   ) +
-#   scale_fill_manual(
-#     values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 3, -1)
-#   ) +
-#   scale_y_continuous(limits = c(0, 100) , expand = c(0, 0))
-# g_ep_cx
-
-# g_ep_cx2 <-
-#   ggplot(e_box_d_cx, aes(x = stc, y = mean, fill = cx)) +
-#   geom_bar(
-#     position = position_dodge2(),
-#     stat = "identity",
-#     colour = "black"
-#   ) +
-#   geom_errorbar(
-#     aes(ymin = lowert, ymax = uppert),
-#     position = position_dodge2(.9)
-#   ) +
-#   theme_bw() +
-#   labs(
-#     fill = bquote(c[X]), y = "% agents in an echo chamber", x = "Prior strength"
-#   ) +
-#   scale_fill_manual(
-#     values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5, -1)[c(1:3, 5)]
-#   ) +
-#   scale_y_continuous(limits = c(0, 100) , expand = c(0, 0)) +
-#   scale_x_discrete(label = c("Weak", "Moderate", "Strong"))
-# g_ep_cx2
-
-# g_ep_comb <- plot_grid(
-#   g_ep_bt2, g_ep_cx2, g_ep,
-#   ncol = 1,
-#   labels = "AUTO"
-# )
-# g_ep_comb
-
-# Figure -----------------------------------------------------------------------
+# Figures ----------------------------------------------------------------------
 
 # Echo chambers
 ebox_p <- box_custom(
@@ -362,130 +236,9 @@ shdata <- sapply(
   simplify = FALSE
 )
 shdata$base$tx |> describe()
-shdata$cx_0.1_stc_40$tx |> describe()
 shdata$bt_0.5_cx_0.5$tx |> describe()
 
-# # Tx - Mean by model -----------------------------------------------------------
-# describe(shdata$base$tx)
-# describe(shdata$bt_0_cx_0.5$tx)
-
-# # Tx (toxic) -------------------------------------------------------------------
-# txdata <- cbind(
-#   melt(sapply(shdata, function(x) x$tx) |> data.frame()),
-#   iter = rep(1:200, 5),
-#   cx = rep(4:0*.5, each = 200)
-# ) |> data.frame()
-# names(txdata)[names(txdata) == "value"] <- "shares"
-# txdata$cx <- txdata$cx |> sprintf(fmt = "%0.1f")
-# txplot <-
-#   ggplot(txdata, aes(x = cx, y = shares)) +
-#   geom_boxplot(notch = TRUE, alpha = 0) +
-#   geom_point(aes(x = cx, y = shares, colour = cx)
-#              , position = position_jitterdodge(jitter.width = .1)) +
-#   scale_colour_manual(
-#     values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)
-#   ) +
-#   labs(x = bquote(c[x]), y = "Toxic Shares", colour = bquote(c[x])) +
-#   theme_bw() +
-#   theme(text = element_text(size = 10),
-#         plot.margin = unit(c(.5, .5, .5, .5), "cm")) +
-#   ggtitle("(A)")
-# txplot
-
-# # A (constructive) -------------------------------------------------------------
-# adata <- cbind(
-#   melt(sapply(shdata, function(x) x$a) |> data.frame()),
-#   iter = rep(1:200, 5),
-#   cx = rep(4:0*.5, each = 200)
-# ) |>
-#   data.frame()
-# names(adata)[names(adata) == "value"] <- "shares"
-# adata$cx <- adata$cx |> sprintf(fmt = "%0.1f")
-# aplot <-
-#   ggplot(adata, aes(x = cx, y = shares)) +
-#   geom_boxplot(notch = TRUE, alpha = 0) +
-#   geom_point(
-#     aes(x = cx, y = shares, colour = cx),
-#     position = position_jitterdodge(jitter.width = .1)
-#   ) +
-#   scale_colour_manual(
-#     values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)
-#   ) +
-#   labs(x = bquote(c[x]), y = "Constructive Shares", colour = bquote(c[x])) +
-#   coord_cartesian(c(.5, 5.5), c(0, 54000), FALSE) +
-#   theme_bw() +
-#   theme(
-#     text = element_text(size = 10),
-#     plot.margin = unit(c(.5, .5, .5, .5), "cm")
-#   ) +
-#   ggtitle("(B)")
-# aplot
-
-# # Combined Tx and A plots ------------------------------------------------------
-# txaplot <- ggarrange(
-#   plotlist = list(txplot, aplot),
-#   ncol = 2,
-#   common.legend = TRUE,
-#   legend = "right"
-# )
-# txaplot
-
-# # SD plot ----------------------------------------------------------------------
-# sddata0 <- do.call(
-#   rbind,
-#   mapply(
-#     function(x, y) {
-#       data.frame(cx = rep(y, length(x$sd)), sd = x$sd)
-#     },
-#     x = results2, y = 4:0*.5, SIMPLIFY = FALSE
-#   )
-# )
-# sddata0$cx <- sddata0$cx |> sprintf(fmt = "%0.1f")
-# 
-# sdboxplot <-
-#   ggplot(sddata0, aes(x = cx, y = sd)) +
-#   geom_boxplot(alpha = 0) +
-#   geom_point(aes(x = cx, y = sd, colour = cx)
-#              , position = position_jitterdodge(jitter.width = .1)) +
-#   scale_colour_manual(
-#     values = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5)
-#   ) +
-#   labs(x = bquote(c[x]), colour = bquote(c[x])) +
-#   scale_y_continuous("SD of opinions") +
-#   theme_bw() +
-#   theme(
-#     text = element_text(size = 10),
-#     plot.margin = unit(c(.5, .5, .5, .5), "cm")
-#   ) +
-#   ggtitle("(B)")
-# sdboxplot
-# 
-# msdarrange <- ggarrange(
-#   plotlist = list(mboxplot, sdboxplot),
-#   ncol = 2,
-#   common.legend = TRUE,
-#   legend = "right"
-# )
-# msdarrange
-
 # Save plots -------------------------------------------------------------------
-# ggsave(file.path("plots", "e_box.png"), eboxall,
-#        width = 3000, height = 1500, units = "px")
-# ggsave(file.path("plots", "Figure3.eps"), eboxall,
-#        width = 6, height = 4.5, dpi = 450)
-# ggsave(file.path("plots", "txa_plot.png"), txaplot,
-#        width = 2200, height = 1500, units = "px")
-# ggsave(file.path("plots", "Figure6.eps"), txaplot,
-#        width = 6, height = 5, dpi = 450)
-# ggsave(file.path("plots", "msd_plot.png"), msdarrange,
-#        width = 2200, height = 1500, units = "px")
-# ggsave(file.path("plots", "Figure4.eps"), msdarrange,
-#        width = 6, height = 5, dpi = 450)
-# ggsave2(file.path("plots", "EchoByParam.png"), g_ep, width = 12, height = 8)
-# ggsave2(
-#   file.path("plots", "echo_bar.png"), g_ep_comb,
-#   width = 4000, height = 3000, units = "px"
-# )
 ggsave2(
   file.path("plots", "echo_box.png"), ebox_p_all,
   width = 4000, height = 3000, units = "px"
@@ -494,3 +247,5 @@ ggsave2(
   file.path("plots", "op_box.png"), opbox_p_all,
   width = 4000, height = 3000, units = "px"
 )
+ggsave2(file.path("plots", "Fig5.eps"), ebox_p_all, width = 6, height = 4.5)
+ggsave2(file.path("plots", "Fig6.eps"), opbox_p_all, width = 6, height = 4.5)
