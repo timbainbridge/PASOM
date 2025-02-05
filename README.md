@@ -31,9 +31,9 @@ To run a set of simulations, first run `0_fixed.R` to create input files or crea
 The files to run the simulations reported in the paper are as follows:
 
 - `base.R`: The baseline simulations.
-- `bt_stc.R`: The simulations changing the `c_T` parameter and starting priors.
-- `cx_stc.R`: The simulations changing the `c_X` parameter and starting priors.
-- `bt_cx.rds`: The simulations changing the `c_T` and `c_X` parameters.
+- `bt_stc.R`: The simulations changing the $c_T$ parameter and starting priors.
+- `cx_stc.R`: The simulations changing the $c_X$ parameter and starting priors.
+- `bt_cx.rds`: The simulations changing the $c_T$ and $c_X$ parameters.
 
 All other files in the `run_sims` folder run simulations reported in the Supplement.
 
