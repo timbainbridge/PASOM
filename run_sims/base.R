@@ -1,15 +1,17 @@
 # Code to run the model
 
-# Baseline parameter values
+# Baseline parameter values and objects
 source(file.path("scripts", "default_params.R"))
+source(file.path("scripts", "default_objects.R"))
 
-# Changes for current simulations
-# No parameter changes from default
+# Parameter changes from defaults for the current simulations
+# None for this sim
 
-# Input data
-pers_input <- readRDS(file.path("input", "persi.rds"))
-graph_input <- readRDS(file.path("input", "g0.rds"))
-model_name <- "base_np"
+# Object changes from defaults for the current simulations
+# None for this sim
+
+# Model name
+model <- "base"
 
 # Run simulations
-source(file.path("scripts", "modelsetup_np.R"))
+source(file.path("scripts", "modelsetup.R"))

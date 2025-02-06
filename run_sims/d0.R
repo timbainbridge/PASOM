@@ -1,15 +1,26 @@
 # Code to run the model
 
-# Baseline parameter values
+# Baseline parameter values and objects
 source(file.path("scripts", "default_params.R"))
+source(file.path("scripts", "default_objects.R"))
 
-# Changes for current simulations
-dt0 <- da0 <- 0  # Completely myopic.
+# Parameter changes from defaults for the current simulations
+dc <- c(.5, 0)
+dt0_d <- dt0
+da0_d <- da0
 
-# Input data
-pers_input <- readRDS(file.path("input", "persi.rds"))
-graph_input <- readRDS(file.path("input", "g0.rds"))
-model_name <- "d0_np"
+# Object changes from defaults for the current simulations
+# None
 
 # Run simulations
-source(file.path("scripts", "modelsetup_np.R"))
+for (m in dc) {
+  dt0 <- dt0_d * m  # Completely myopic at dc = 0.
+  da0 <- da0_d * m
+  
+  # Model name
+  model <- paste0("d", m)
+  message(model)
+  
+  # Run
+  source(file.path("scripts", "modelsetup.R"))
+}

@@ -5,18 +5,18 @@ source(file.path("scripts", "default_params.R"))
 source(file.path("scripts", "default_objects.R"))
 
 # Parameter changes from defaults for the current simulations
-ckc <- c(.8, 1.25)
-ck0_d <- ck0
+cbc <- c(.5, 2)
+cb0_d <- cb0
 
 # Object changes from defaults for the current simulations
 # None
 
 # Run simulations
-for (m in ckc) {
-  ck0 <- ck0_d * m
+for (m in cbc) {
+  cb0 <- cb0_d * m
   
   # Model name
-  model <- paste0("ck", m)
+  model <- paste0("cb", m)
   message(model)
   
   # Run

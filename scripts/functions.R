@@ -31,11 +31,12 @@
 # bap <- bap1
 # btp <- btp1
 # ccp <- ccp1
-# bsp <- bsp1
 # bag <- bag1
 # btg <- btg1
 # ck <- ck1
 # cb <- cb1
+# ths <- ths1
+# u <- u1
 # cx <- cx1
 # nu <- nu1
 # mu <- mu1
@@ -47,13 +48,14 @@ fun.a <- function(
   agents1, g1,
   # Defaults take what's in the global environment (if anything).
   dt = dt1, da = da1, sdi = sdi1, sdj = sdj1,
-  bap = bap1, btp = btp1, ccp = ccp1, bsp = bsp1,
+  bap = bap1, btp = btp1, ccp = ccp1,
   bag = bag1, btg = btg1, ck = ck1, cb = cb1,
-  cx = cx1, nu = nu1, mu = mu1, p1 = p11, ths = ths1
+  ths = ths1, u = u1, cx = cx1, nu = nu1, mu = mu1, p1 = p11
 ) {
   # Step 1: Information creation -----------------------------------------------
   ej1 <- rnorm(1, sd = sdj)
   ej0 <- rnorm(1, sd = sdj)
+  eij <- rnorm(nrow(agents1), sd = sdi)
   see <-
     agents1$id[rbinom(length(agents1$id), 1, p1) |> as.logical() |> which()]
   K <- adjacent_vertices(g1, agents1$id) |> sapply(length)
@@ -78,18 +80,19 @@ fun.a <- function(
       ET1 * btp -
       ccp +
       ej1 +
-      rnorm(nrow(agents1), sd = sdi)
+      eij
     agents1$U0 <-
       log(EA0 + 1) * lmda * bap * (1 - agents1$ps) -
       ET0 * btp -
       ccp +
       ej0 +
-      rnorm(nrow(agents1), sd = sdi)
-    pub <- see[agents1$U1[agents1$id %fin% see] > 0 |
-                 agents1$U0[agents1$id %fin% see] > 0]
+      eij
+    share1 <- agents1$id[
+      (agents1$U1 > 0 | agents1$U0 > 0) & (abs(agents1$U1 - agents1$U0) > u)
+    ]
+    pub <- see[see %fin% share1]
   }
   if (length(pub) != 0) {
-    share1 <- agents1$id[agents1$U1 > 0 | agents1$U0 > 0]
     # Of those who will share, who are connected to each other?
     g3 <- delete_vertices(g1, agents1$id[!agents1$id %fin% share1])
     # Of those who will share, who are connected to an original sharer?
@@ -120,7 +123,7 @@ fun.a <- function(
         },
         pp0 = pp, ps0 = agents3$ps
       )
-      px1[px1 < 0] <- 0  # Quicker than mins and maxs.
+      px1[px1 < 0] <- 0  # Quicker than min and max.
       px1[px1 > 1] <- 1
       # Share A0 or T1?
       px0 <- mapply(
@@ -184,22 +187,26 @@ fun.a <- function(
     if (((!agents1$id %fin% rownames(info4)) |> sum()) != 0) {
       info <- rbind.data.frame(
         info4,
-        data.frame(aa1 = rep(0, sum(!agents1$id %fin% rownames(info4))),
-                   aa0 = rep(0, sum(!agents1$id %fin% rownames(info4))),
-                   at1 = rep(0, sum(!agents1$id %fin% rownames(info4))),
-                   at0 = rep(0, sum(!agents1$id %fin% rownames(info4))),
-                   row.names = agents1$id[!agents1$id %fin% rownames(info4)])
+        data.frame(
+          aa1 = rep(0, sum(!agents1$id %fin% rownames(info4))),
+          aa0 = rep(0, sum(!agents1$id %fin% rownames(info4))),
+          at1 = rep(0, sum(!agents1$id %fin% rownames(info4))),
+          at0 = rep(0, sum(!agents1$id %fin% rownames(info4))),
+          row.names = agents1$id[!agents1$id %fin% rownames(info4)]
+        )
       )
       info <- info[order(rownames(info)), ]
     } else {
       info <- info4
     }
   } else {
-    info <- data.frame(aa1 = rep(0, length(agents1$id)),
-                       aa0 = rep(0, length(agents1$id)),
-                       at1 = rep(0, length(agents1$id)),
-                       at0 = rep(0, length(agents1$id)),
-                       row.names = agents1$id)
+    info <- data.frame(
+      aa1 = rep(0, length(agents1$id)),
+      aa0 = rep(0, length(agents1$id)),
+      at1 = rep(0, length(agents1$id)),
+      at0 = rep(0, length(agents1$id)),
+      row.names = agents1$id
+    )
     ashare1 <- rep(0, length(agents1$id))
     ashare0 <- rep(0, length(agents1$id))
     txshare1 <- rep(0, length(agents1$id))
@@ -218,18 +225,14 @@ fun.a <- function(
   agentsout$at0 <- ifelse(agentsout$at0 <= 1, 1, agentsout$at0)
   agentsout$aa1 <- ifelse(agentsout$aa1 <= 1, 1, agentsout$aa1)
   agentsout$aa0 <- ifelse(agentsout$aa0 <= 1, 1, agentsout$aa0)
-  agentsout$Kt1 <- ifelse(agents1$at1 <= 1,
-                          agents1$Kt1 + K,
-                          agents1$Kt1 * dt + K)
-  agentsout$Kt0 <- ifelse(agents1$at0 <= 1,
-                          agents1$Kt0 + K,
-                          agents1$Kt0 * dt + K)
-  agentsout$Ka1 <- ifelse(agents1$aa1 <= 1,
-                          agents1$Ka1 + K,
-                          agents1$Ka1 * da + K)
-  agentsout$Ka0 <- ifelse(agents1$aa0 <= 1,
-                          agents1$Ka0 + K,
-                          agents1$Ka0 * da + K)
+  agentsout$Kt1 <-
+    ifelse(agents1$at1 <= 1, agents1$Kt1 + K, agents1$Kt1 * dt + K)
+  agentsout$Kt0 <-
+    ifelse(agents1$at0 <= 1, agents1$Kt0 + K, agents1$Kt0 * dt + K)
+  agentsout$Ka1 <-
+    ifelse(agents1$aa1 <= 1, agents1$Ka1 + K, agents1$Ka1 * da + K)
+  agentsout$Ka0 <-
+    ifelse(agents1$aa0 <= 1, agents1$Ka0 + K, agents1$Ka0 * da + K)
   agentsout$ps <- (agentsout$as - 1/3) / (agentsout$as + agentsout$bs - 2/3)
   agentsout$lmda <- ifelse(
     (agentsout$as + agentsout$bs) * (abs(agentsout$ps - .5) + .5) <= mu,
@@ -243,52 +246,79 @@ fun.a <- function(
   pa1 <- (agentsout$aa1 - 1/3) / (agentsout$Ka1 - 2/3)
   pa0 <- (agentsout$aa0 - 1/3) / (agentsout$Ka0 - 2/3)
   # Calculate optimal number of connections
-  Ki1 <- ((bag * lmda * agentsout$ps) / ((btg * pt1) + ck)) - (1 / (pa1 + cb))
-  Ki0 <- ((bag * lmda * (1-agentsout$ps)) / ((btg * pt0) + ck)) -
-    (1 / (pa0 + cb))
+  # Leave lmda out here as we do not want people disconnecting due to lack of
+  # interest (under the assumption that people who lose interest disconnect from
+  # the topic rather than the connections they made because of the topic).
+  # Ki1 <- ((bag * lmda * agentsout$ps) / ((btg * pt1) + ck)) - (1 / (pa1 + cb))
+  Ki1 <- ((bag * agentsout$ps) / ((btg * pt1) + ck)) - (1 / (pa1 + cb))
+  # Ki0 <- ((bag * lmda * (1-agentsout$ps)) / ((btg * pt0) + ck)) -
+  #   (1 / (pa0 + cb))
+  Ki0 <- ((bag * (1-agentsout$ps)) / ((btg * pt0) + ck)) - (1 / (pa0 + cb))
   # Calculate optimal number of connections
+  
+  # Some optimisation would be possible here. That is, we only need to consider
+  # DKiI for agents who share in favour of I during the round.
+  
   DKi1 <- Ki1 - K
   DKi0 <- Ki0 - K
   
   # Agents disconnect from disliked connections --------------------------------
-  if (length(pub) > 1) {  # if pub = 1 then it would be constructive.
+  if (length(pub) > 0) {
+    # Who shared constructively and toxically for each position?
+    ash1 <- styp[share][styp[share] == "A1"] |> names()
+    ash0 <- styp[share][styp[share] == "A0"] |> names()
     txsh1 <- share[styp == "T1"]
     txsh0 <- share[styp == "T0"]
     # Find disconnections, disconnect from pro-science
+    # At least one toxic share against pro-science corresponding to someone with
+    # DKi1 <= -1.
     if (sum(info$at1 > 0 & DKi1 <= -1) > 0) {
-      tc1 <- agentsout$id[info$at1 > 0 & DKi1 <= -1]
-      if (length(tc1) == 1) {
-        tmp <- txsh1[txsh1 %fin% neighbors(g1, tc1)$name]
-        tc2 <- sample(tmp, 1)
+      # Who would like fewer toxic interaction from the pro-science?
+      tc10 <- agentsout$id[info$at1 > 0 & DKi1 <= -1]
+      if (sum(tc10 %fin% ash1) > 0) {
+        # Shared in favour of pro-science and would like fewer toxic interactions.
+        # This avoids anti-science disconnecting from toxic anti-science.
+        tc1 <- tc10[tc10 %fin% ash1]
+        if (length(tc1) == 1) {
+          tmp <- txsh1[txsh1 %fin% neighbors(g1, tc1)$name]
+          tc2 <- sample(tmp, 1)
+        } else {
+          tc2 <- sapply(
+            adjacent_vertices(g1, tc1),
+            function(x) {
+              tmp <- txsh1[txsh1 %fin% x$name]
+              sample(tmp, 1)
+            }
+          )
+        }
+        txcon1 <- cbind(tc1, tc2)
       } else {
-        tc2 <- sapply(
-          adjacent_vertices(g1, tc1),
-          function(x) {
-            tmp <- txsh1[txsh1 %fin% x$name]
-            sample(tmp, 1)
-          }
-        )
+        txcon1 <- character()
       }
-      txcon1 <- cbind(tc1, tc2)
     } else {
       txcon1 <- character()
     }
     # Find disconnections, disconnect from anti-science
     if (sum(info$at0 > 0 & DKi0 <= -1) > 0) {
-      tc1 <- agentsout$id[info$at0 > 0 & DKi0 <= -1]
-      if (length(tc1) == 1) {
-        tmp <- txsh0[txsh0 %fin% neighbors(g1, tc1)$name]
-        tc2 <- sample(tmp, 1)
+      tc10 <- agentsout$id[info$at0 > 0 & DKi0 <= -1]
+      if (sum(tc10 %fin% ash0) > 0) {
+        tc1 <- tc10[tc10 %fin% ash0]
+        if (length(tc1) == 1) {
+          tmp <- txsh0[txsh0 %fin% neighbors(g1, tc1)$name]
+          tc2 <- sample(tmp, 1)
+        } else {
+          tc2 <- sapply(
+            adjacent_vertices(g1, tc1),
+            function(x) {
+              tmp <- txsh0[txsh0 %fin% x$name]
+              sample(tmp, 1)
+            }
+          )
+        }
+        txcon0 <- cbind(tc1, tc2)
       } else {
-        tc2 <- sapply(
-          adjacent_vertices(g1, tc1),
-          function(x) {
-            tmp <- txsh0[txsh0 %fin% x$name]
-            sample(tmp, 1)
-          }
-        )
+        txcon0 <- character()
       }
-      txcon0 <- cbind(tc1, tc2)
     } else {
       txcon0 <- character()
     }
@@ -298,21 +328,15 @@ fun.a <- function(
     } else {
       txconc <- list()
     }
-  } else {
-    txconc <- list()
-    txsh1 <- character()
-    txsh0 <- character()
-  }
-  # Step 6: Agents form new connections ----------------------------------------
-  if (length(pub) > 0) {
-    ash1 <- styp[share][styp[share] == "A1"] |> names()
-    ash0 <- styp[share][styp[share] == "A0"] |> names()
-    nccand01 <- agentsout$id[DKi1 >= 1 &
-                             !agentsout$id %fin% c(txsh1, txsh0) &
-                             agentsout$id %fin% seen0]
-    nccand00 <- agentsout$id[DKi0 >= 1 &
-                             !agentsout$id %fin% c(txsh1, txsh0) &
-                             agentsout$id %fin% seen0]
+    # Step 6: Agents form new connections --------------------------------------
+    # Agents who desire at least 1 extra connection, who didn't share toxically,
+    # and who saw a post during the round. (nccand = new connection candidates)
+    nccand01 <- agentsout$id[
+      DKi1 >= 1 & !agentsout$id %fin% c(txsh1, txsh0) & agentsout$id %fin% seen0
+    ]
+    nccand00 <- agentsout$id[
+      DKi0 >= 1 & !agentsout$id %fin% c(txsh1, txsh0) & agentsout$id %fin% seen0
+    ]
     g4 <- delete_vertices(g1, !V(g1)$name %fin% share)
     groups1 <- components(g4)
     if (length(nccand01) > 0 & length(ash1) > 0) {
@@ -320,10 +344,13 @@ fun.a <- function(
       ncon01 <- sapply(
         nccand01,
         function(x) {
-          ifelse(x %fin% names(groups1$membership),
-                 groups1$membership[[x]],
-                 groups1$membership[names(groups1$membership) %fin%
-                                      neighbors(g1, x)$name])
+          ifelse(
+            x %fin% names(groups1$membership),
+            groups1$membership[[x]],
+            groups1$membership[
+              names(groups1$membership) %fin% neighbors(g1, x)$name
+            ]
+          )
         }
       )
       # Group membership of options
@@ -366,10 +393,13 @@ fun.a <- function(
       ncon00 <- sapply(
         nccand00,
         function(x) {
-          ifelse(x %fin% names(groups1$membership),
-                 groups1$membership[[x]],
-                 groups1$membership[names(groups1$membership) %fin%
-                                      neighbors(g1, x)$name])
+          ifelse(
+            x %fin% names(groups1$membership),
+            groups1$membership[[x]],
+            groups1$membership[
+              names(groups1$membership) %fin% neighbors(g1, x)$name
+            ]
+          )
         },
         simplify = FALSE
       )
@@ -428,36 +458,37 @@ fun.a <- function(
     pub1 <- styp[pub][styp[pub] == "A1"] |> names()
     pub0 <- styp[pub][styp[pub] == "A0"] |> names()
   } else {
+    txconc <- list()
+    txsh1 <- character()
+    txsh0 <- character()
     ncon2 <- list()
     pub1 <- character()
     pub0 <- character()
   }
   # Save outputs and agents for next round -------------------------------------
-  list(agents = agentsout,
-       unfriend = txconc,
-       newcon = ncon2,
-       ashare1 = ashare1,
-       ashare0 = ashare0,
-       txshare1 = txshare1,
-       txshare0 = txshare0,
-       pub1 = length(pub1),
-       pub0 = length(pub0),
-       K = K)
+  list(
+    agents = agentsout,
+    unfriend = txconc,
+    newcon = ncon2,
+    ashare1 = ashare1,
+    ashare0 = ashare0,
+    txshare1 = txshare1,
+    txshare0 = txshare0,
+    pub1 = length(pub1),
+    pub0 = length(pub0),
+    K = K
+  )
 }
 
-# Run through each iteration (network / personality random) ####################
+# Run through each iteration ###################################################
 
 # # Code to allow fun.b to be run line-by-line if necessary for bug fixes or
 # # changes.
-# g0 <- gf
-# pers0 <- persf
 # iter <- iter0
 # n_agent <- n_agent0
-# group_n <- group_n0
-# p_in <- p_in0
-# p_out <- p_out0
 # rounds <- rounds0
 # stcon <- stcon0
+# stcdv <- stcdv0
 # shrpp <- shrpp0
 # dt1 <- dt0
 # da1 <- da0
@@ -466,12 +497,12 @@ fun.a <- function(
 # bap1 <- bap0
 # btp1 <- btp0
 # ccp1 <- ccp0
-# bsp1 <- bsp0
 # bag1 <- bag0
 # btg1 <- btg0
 # ck1 <- ck0
 # cb1 <- cb0
 # ths1 <- ths0
+# u1 <- u0
 # cx1 <- cx0
 # nu1 <- nu0
 # mu1 <- mu0
@@ -481,24 +512,21 @@ fun.a <- function(
 # aa <- aa0
 
 # Run through each iteration (network fixed) #####################
-fun.b2 <- function(g0, pers0,
+fun.b <- function(g0, pers0,
   # In general, set these in the global environment
   iter = iter0, n_agent = n_agent0,
-  rounds = rounds0, stcon = stcon0, shrpp = shrpp0,
+  rounds = rounds0, stcon = stcon0, stcdv = stcdv0, shrpp = shrpp0,
   dt1 = dt0, da1 = da0, sdi1 = sdi0, sdj1 = sdj0,
-  bap1 = bap0, btp1 = btp0, ccp1 = ccp0, bsp1 = bsp0,
+  bap1 = bap0, btp1 = btp0, ccp1 = ccp0,
   bag1 = bag0, btg1 = btg0, ck1 = ck0, cb1 = cb0,
-  ths1 = ths0, cx1 = cx0, nu1 = nu0, mu1 = mu0, p11 = p10,
+  ths1 = ths0, u1 = u0, cx1 = cx0, nu1 = nu0, mu1 = mu0, p11 = p10,
   gma = gma0, at = at0, aa = aa0
 ) {
   # Setup ----------------------------------------------------------------------
   agents0 <- data.frame(
-    id = formatC(1:n_agent,
-                 width = nchar(n_agent),
-                 format = "d",
-                 flag = "0")
-    , bs = (stcon / ths1) * 1.5^-pers0$i
-    , as = (stcon * ths1) * 1.5^pers0$i
+    id = formatC(1:n_agent, width = nchar(n_agent), format = "d", flag = "0")
+    , bs = (stcon / ths1) * stcdv^-pers0
+    , as = (stcon * ths1) * stcdv^pers0
     , at1 = at
     , at0 = at
     , aa1 = aa
@@ -508,6 +536,9 @@ fun.b2 <- function(g0, pers0,
   )
   agents0$Kt1 <- agents0$Ka1
   agents0$Kt0 <- agents0$Ka0
+  # In case any bs or as < 1
+  agents0$bs[agents0$bs < 1] <- 1
+  agents0$as[agents0$as < 1] <- 1
   K <- adjacent_vertices(g0, agents0$id) |> sapply(length)
   # Output objects
   opinion1 <- matrix(NA, n_agent, rounds)
@@ -528,9 +559,9 @@ fun.b2 <- function(g0, pers0,
     out <- fun.a(
       out$agents, g,
       dt = dt1, da = da1, sdi = sdi1, sdj = sdj1,
-      bap = bap1, btp = btp1, ccp = ccp1, bsp = bsp1,
-      bag = bag1, btg = btg1, ck = ck1, cb = cb1,
-      cx = cx1, nu = nu1, mu = mu1, p1 = p11, ths = ths1
+      bap = bap1, btp = btp1, ccp = ccp1,
+      bag = bag1, btg = btg1, ck = ck1, cb = cb1, u = u1, cx = cx1,
+      nu = nu1, mu = mu1, p1 = p11, ths = ths1
     )
     opinion1[, i] <- out$agents$ps
     K1[, i] <- out$K
@@ -549,9 +580,9 @@ fun.b2 <- function(g0, pers0,
     if (length(out$newcon) != 0) {
       g <- add_edges(g, out$newcon)
     }
-    # Step 7: New connections if < 2 -------------------------------------------
+    # Step 7: New connections if < 1 -------------------------------------------
     adv0 <- sapply(adjacent_vertices(g, out$agents$id), length)
-    adv <- names(adv0[adv0 <= 1])
+    adv <- names(adv0[adv0 == 0])
     count0 <- 1
     while ((length(adv) > 0) & (count0 <= length(adv))) {
       edgesel0 <- adv[count0]
@@ -559,8 +590,9 @@ fun.b2 <- function(g0, pers0,
       psd <- (out$agents$ps - edgesel0ps) |> abs()  # ps difference
       psss <- (out$agents$ps >= .5) == (edgesel0ps >= .5)  # ps same side
       neib <- neighbors(g, edgesel0)$name
-      edgeselopt <- out$agents$id[(psd < gma | psss) &
-                                    !out$agents$id %fin% c(neib, edgesel0)]
+      edgeselopt <- out$agents$id[
+        (psd < gma | psss) & !out$agents$id %fin% c(neib, edgesel0)
+      ]
       if (length(edgeselopt) > 0) {
         edgesel1 <- sample(edgeselopt, 1)
         g <- g + edge(c(edgesel0, edgesel1))
@@ -570,41 +602,59 @@ fun.b2 <- function(g0, pers0,
       adv0 <- sapply(adjacent_vertices(g, out$agents$id), length)
       adv <- names(adv0[adv0 <= 1])
     }
-    # Step 8: New connections if none ------------------------------------------
-    compon <- components(g)
-    while (1 %fin% compon$csize) {
-      comord <- compon$csize |> order()
-      edgesel0 <- compon$membership[compon$membership == comord[1]] |> names()
-      edgesel1 <- sample(out$agents$id[!out$agents$id == edgesel0], 1)
-      g <- g + edge(c(edgesel0, edgesel1))
-      compon <- components(g)
-    }
-    # Echo chamber membership
+    # Round by round outcome: Echo chamber membership --------------------------
     op <- ifelse(out$agents$ps >= .6, 1, ifelse(out$agents$ps <= .4, -1, 0))
     echo00 <- mapply(
       function(x, y) {
         # Proportion of connections with pro-science view
-        m <- (out$agents[y, "ps"] >= .5) |> mean()
+        m1 <- (out$agents[y, "ps"] > .5) |> mean()
+        m0 <- (out$agents[y, "ps"] < .5) |> mean()
         # In pro (1) or anti (-1) science echo chamber or neither (0)?
-        ifelse(x == 1 & m >= .9, 1, ifelse(x == -1 & m <= .1, -1, 0))
+        ifelse(x == 1 & m1 >= .9, 1, ifelse(x == -1 & m0 >= .9, -1, 0))
       },
       x = op, y = adjacent_vertices(g, out$agents$id)
     )
     echo[, i] <- echo00
   }
   # Output ---------------------------------------------------------------------
-  list(opinion1 = opinion1,
-       K1 = K1,
-       a11 = a11,
-       a10 = a10,
-       tx11 = tx11,
-       tx10 = tx10,
-       echo = echo,
-       pub11 = pub11,
-       pub10 = pub10,
-       lmda1 = lmda1,
-       g0 = g0,
-       g = g,
-       agents = out$agents,
-       final_round = i)
+  
+  # Final average neighbour opinion
+  extra <- mapply(
+    function(x, y) {
+      m1_inc <- (out$agents[y, "ps"] > .5) |> mean()
+      m0_inc <- (out$agents[y, "ps"] < .5) |> mean()
+      m1_ex <- (out$agents[y, "ps"] > .75) |> mean()
+      m0_ex <- (out$agents[y, "ps"] < .25) |> mean()
+      c(
+        nb_opinion = out$agents$ps[V(g) %in% y] |> mean(),
+        echo_inc = ifelse(
+          x >= .6 & m1_inc >= .75, 1, ifelse(x <= .4 & m0_inc >= .75, -1, 0)
+        ),
+        echo_ex = ifelse(
+          x >= .75 & m1_ex >= .95, 1, ifelse(x <= .25 & m0_ex >= .95, -1, 0)
+        )
+      )
+    },
+    x = out$agents$ps, y = adjacent_vertices(g, out$agent$id)
+  ) |> t() |> as.data.frame()
+  row.names(extra) <- row.names(out$agents)
+  list(
+    opinion1 = opinion1,
+    nb_opinion = extra$nb_opinion,
+    K1 = K1,
+    a11 = a11,
+    a10 = a10,
+    tx11 = tx11,
+    tx10 = tx10,
+    echo = echo,
+    echo_inc = extra$echo_inc,
+    echo_ex = extra$echo_ex,
+    pub11 = pub11,
+    pub10 = pub10,
+    lmda1 = lmda1,
+    g0 = g0,
+    g = g,
+    agents = out$agents,
+    final_round = i
+  )
 }

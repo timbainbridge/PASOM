@@ -1,0 +1,17 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+Supplement.Rmd
+input/
+output/
+plots/
+results/
+Supplement.pdf
+author-info-blocks.lua
+scholarly-metadata.lua
+git.R
+Supplement2.Rmd
+Supplement2.log
+Supplement2.pdf
+README.html
