@@ -77,4 +77,4 @@ ggdraw(p)
 
 # Save -------------------------------------------------------------------------
 ggsave2(file.path("plots", "RQ2a_plot.png"), p, width = 13, height = 12)
-ggsave2(file.path("plots", "Fig4.eps"), p, width = 6, height = 5.5)
+ggsave2(file.path("plots", "Fig4.eps"), p, width = 12, height = 10)

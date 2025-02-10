@@ -170,7 +170,7 @@ ebox_p <- box_custom(
   bquote(c[X]), bquote(c[T]), "% agents in an echo chamber",
   limits = c(0, 101)
 )
-ebox_p
+# ebox_p
 ebox_p_cx <- box_custom(
   ebox_d_cx, colour = cx, y = value, x = stc,
   clab = bquote(c[X]),
@@ -179,7 +179,7 @@ ebox_p_cx <- box_custom(
   limits = c(0, 101),
   pal = paletteer_c("ggthemes::Sunset-Sunrise Diverging", 5, -1)[c(1:3, 5)]
 )
-ebox_p_cx
+# ebox_p_cx
 ebox_p_bt <- box_custom(
   ebox_d_bt, colour = bt, y = value, x = stc,
   clab = bquote(c[T]),
@@ -247,5 +247,5 @@ ggsave2(
   file.path("plots", "op_box.png"), opbox_p_all,
   width = 4000, height = 3000, units = "px"
 )
-ggsave2(file.path("plots", "Fig5.eps"), ebox_p_all, width = 6, height = 4.5)
-ggsave2(file.path("plots", "Fig6.eps"), opbox_p_all, width = 6, height = 4.5)
+ggsave2(file.path("plots", "Fig5.eps"), ebox_p_all, width = 9, height = 9)
+ggsave2(file.path("plots", "Fig6.eps"), opbox_p_all, width = 9, height = 9)

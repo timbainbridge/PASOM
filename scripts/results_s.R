@@ -51,7 +51,7 @@ mplot <-
     colours = paletteer_c("ggthemes::Red-Gold", 101), limits = 0:1 * 100
   ) +
   scale_y_continuous(
-    "Mean of\nOpinion",
+    "Mean of\nopinion",
     1:5*.2-.1,
     0:5*.2,
     limits = c(0, 1),
@@ -92,7 +92,7 @@ e0plot <-
     limits = 0:1
   ) +
   scale_y_continuous(
-    "% agents in anti-science\nEcho Chamber",
+    "% agents in anti-science\necho chambers",
     0:5*20,
     1:5*20 - 10,
     limits = c(0, 100),
@@ -129,7 +129,7 @@ e1plot <-
     limits = 0:1
   ) +
   scale_y_continuous(
-    "% agents in pro-science\nEcho Chamber",
+    "% agents in pro-science\necho chambers",
     0:5*20,
     1:5*20 - 10,
     limits = c(0, 100),
@@ -166,7 +166,7 @@ eplot <-
     limits = 0:1
   ) +
   scale_y_continuous(
-    "% agents in any\nEcho Chamber",
+    "% agents in any\necho chamber",
     0:5*20,
     1:5*20 - 10,
     limits = c(0, 100),

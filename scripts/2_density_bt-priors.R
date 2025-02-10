@@ -70,10 +70,10 @@ py <- plot_grid(
 p <- plot_grid(
   py, textGrob("Average of neighbours' opinions", rot = 90), p0,
   ncol = 3,
-  rel_widths = c(3, 1, 50)
+  rel_widths = c(4.5, 1, 50)
 )
 ggdraw(p)
 
 # Save -------------------------------------------------------------------------
 ggsave2(file.path("plots", "RQ2_plot.png"), p, width = 13, height = 16)
-ggsave2(file.path("plots", "Fig3.eps"), p, width = 6, height = 7.4)
+ggsave2(file.path("plots", "Fig3.eps"), p, width = 10, height = 12)

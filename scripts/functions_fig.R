@@ -162,15 +162,22 @@ get_legend2 <- function(plot, legend = NULL) {
 }
 
 # Boxplot function -------------------------------------------------------------
+
+# Used for manuscript boxplots (where grouping is the same by X)
 box_custom <- function(
     d, x, y, colour = NULL, xlab, clab = NULL, ylab, limits = waiver(),
     pal = NULL
 ) {
+  mag <- 10^floor(log10(limits[2]))
   p <- ggplot(d, aes(x = {{x}}, y = {{y}}, colour = {{colour}})) +
     geom_boxplot(outlier.alpha = 0) +
     geom_point(position = position_jitterdodge(jitter.width = .1)) +
     scale_y_continuous(
-      ylab, 0:5*20, 0:4*20+10, limits = limits, expand = c(0, 0)
+      ylab,
+      0:5 * .2 * mag,
+      0:4 * .2 * mag + .1 * mag,
+      limits = limits,
+      expand = c(0, 0)
     ) +
     theme_bw() +
     scale_colour_manual(
@@ -183,6 +190,7 @@ box_custom <- function(
     labs(x = xlab, colour = clab) +
     guides(colour = guide_legend(reverse = TRUE))
 }
+# Used for the supplement (when group variables differ by X)
 box_custom2 <- function(
     d, x, y, group, xlab, clab = NULL, ylab, limits = waiver(),
     pal = NULL

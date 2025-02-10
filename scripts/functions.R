@@ -4,9 +4,9 @@
 #
 # The first function (fun.a) runs each round of the model. For network updating,
 # fun.a only selects the edges to create or sever.
-
+#
 # The second function (fun.b) sets up the run, saves outputs and agent values
-# for the next round, and updates the network (based on informaiton returned
+# for the next round, and updates the network (based on information returned
 # from fun.a).
 #
 # These functions call parameters from the global environment, loaded in prior
@@ -61,15 +61,15 @@ fun.a <- function(
   K <- adjacent_vertices(g1, agents1$id) |> sapply(length)
   if (length(see) > 0) {
     # Step 2: Agents share (or not) --------------------------------------------
-    agents1$pt1 <- (agents1$at1 - 1/3) / (agents1$Kt1 - 2/3)
-    agents1$pt0 <- (agents1$at0 - 1/3) / (agents1$Kt0 - 2/3)
-    ET1 <- K * agents1$pt1
-    ET0 <- K * agents1$pt0
-    agents1$pa1 <- (agents1$aa1 - 1/3) / (agents1$Ka1 - 2/3)
-    agents1$pa0 <- (agents1$aa0 - 1/3) / (agents1$Ka0 - 2/3)
+    pt1 <- (agents1$at1 - 1/3) / (agents1$Kt1 - 2/3)
+    pt0 <- (agents1$at0 - 1/3) / (agents1$Kt0 - 2/3)
+    ET1 <- K * pt1
+    ET0 <- K * pt0
+    pa1 <- (agents1$aa1 - 1/3) / (agents1$Ka1 - 2/3)
+    pa0 <- (agents1$aa0 - 1/3) / (agents1$Ka0 - 2/3)
+    EA1 <- K * pa1
+    EA0 <- K * pa0
     agents1$ps <- (agents1$as - 1/3) / (agents1$as + agents1$bs - 2/3)
-    EA1 <- K * agents1$pa1
-    EA0 <- K * agents1$pa0
     lmda <- ifelse(
       (agents1$as + agents1$bs) * (abs(agents1$ps - .5) + .5) <= mu,
       1,
@@ -139,9 +139,9 @@ fun.a <- function(
       styp <- ifelse(
         # Original share are constructive
         agents3$id %fin% pub, ifelse(styp0 == 1, "A1", "A0"),
-        ifelse(styp0 == 1,
-               ifelse(x1 == 0, "A1", "T0"),
-               ifelse(x0 == 0, "A0", "T1"))
+        ifelse(
+          styp0 == 1, ifelse(x1 == 0, "A1", "T0"), ifelse(x0 == 0, "A0", "T1")
+        )
       )
       names(styp) <- share
     } else {
@@ -166,17 +166,12 @@ fun.a <- function(
       unique() |>
       sort()
     g5 <- delete_vertices(g1, !V(g1)$name %fin% seen0)
-    info3 <- data.frame(styp = styp, share = share)
     info4 <- mapply(
       function(ga, sn) {
-        a1_n <- (info3$styp[info3$share %fin% names(ga)] == "A1") |>
-          as.numeric()
-        a0_n <- (info3$styp[info3$share %fin% names(ga)] == "A0") |>
-          as.numeric()
-        t1_n <- (info3$styp[info3$share %fin% names(ga)] == "T1") |>
-          as.numeric()
-        t0_n <- (info3$styp[info3$share %fin% names(ga)] == "T0") |>
-          as.numeric()
+        a1_n <- (styp[share %fin% names(ga)] == "A1") |> as.numeric()
+        a0_n <- (styp[share %fin% names(ga)] == "A0") |> as.numeric()
+        t1_n <- (styp[share %fin% names(ga)] == "T1") |> as.numeric()
+        t0_n <- (styp[share %fin% names(ga)] == "T0") |> as.numeric()
         c(aa1 = (a1_n |> sum()),
           aa0 = (a0_n |> sum()),
           at1 = t1_n |> sum(),
@@ -246,14 +241,9 @@ fun.a <- function(
   pa1 <- (agentsout$aa1 - 1/3) / (agentsout$Ka1 - 2/3)
   pa0 <- (agentsout$aa0 - 1/3) / (agentsout$Ka0 - 2/3)
   # Calculate optimal number of connections
-  # Leave lmda out here as we do not want people disconnecting due to lack of
-  # interest (under the assumption that people who lose interest disconnect from
-  # the topic rather than the connections they made because of the topic).
-  # Ki1 <- ((bag * lmda * agentsout$ps) / ((btg * pt1) + ck)) - (1 / (pa1 + cb))
   Ki1 <- ((bag * agentsout$ps) / ((btg * pt1) + ck)) - (1 / (pa1 + cb))
-  # Ki0 <- ((bag * lmda * (1-agentsout$ps)) / ((btg * pt0) + ck)) -
-  #   (1 / (pa0 + cb))
   Ki0 <- ((bag * (1-agentsout$ps)) / ((btg * pt0) + ck)) - (1 / (pa0 + cb))
+  
   # Calculate optimal number of connections
   
   # Some optimisation would be possible here. That is, we only need to consider

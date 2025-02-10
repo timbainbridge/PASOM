@@ -15,6 +15,7 @@ pkgs <- list(
   , "fastmatch"   # For fmatch() and %fin%
   , "openssl"     # For creating hashes
   , "parallel"    # For mclapply()
+  , "stringr"     # Used as part of checking functions haven't changed
 )
 sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
 
@@ -35,8 +36,11 @@ params <- c(
   p1 = p10, gma = gma0
 )
 
-# Hash of functions file
-functions1 <- readLines(file.path("scripts", "functions.R")) |>
+# Functions file to text for comparison with previous version
+fun10 <- readLines(file.path("scripts", "functions.R"))
+fun11 <- fun10[grep("fun.a\\s*<-", x = fun10):length(fun10)]
+fun1 <- fun11[!grepl("^\\s*(#|$)", fun11)] |>
+  gsub(" ", "", x = _) |>
   paste0(collapse = "\n")
 
 # Parameters from a prior run?
@@ -47,11 +51,15 @@ if (file.exists(file.path("output", paste0("params_", model, ".rds")))) {
   params_in <- rep(0, length(params))
 }
 
-# Functions from a prior run?
+# Functions from a prior run
 if (file.exists(file.path("output", "functions.rds"))) {
-  functions0 <- readRDS(file.path("output", "functions.rds"))
+  fun00 <- str_split(readRDS(file.path("output", "functions.rds")), "\n")[[1]]
+  fun01 <- fun00[grep("fun.a\\s*<-", x = fun00):length(fun00)]
+  fun0 <- fun01[!grepl("^\\s*(#|$)", fun01)] |>
+    gsub(" ", "", x = _) |>
+    paste0(collapse = "\n")
 } else {
-  functions0 <- 0
+  fun0 <- 0
 }
 
 # Run?
@@ -60,27 +68,34 @@ if ((list.files(file.path("output", model)) |> length()) == 0) {
 } else {
   run0 <- FALSE
   if (length(params) != length(params_in)) {
-    print(paste(
-      "Major model changes. The number of parameters has changed.",
-      "Move or delete the output (or rename the folder) and run again."
-    ))
+    message(
+      paste(
+        "Major model changes. The number of parameters has changed.",
+        "Move or delete the output (or rename the folder) and run again."
+      )
+    )
   } else {
     if (sum(params != params_in) != 0) {
-      print(paste(
+      message(
         "Different parameter values: Rename/delete the output and run again."
-      ))
+      )
     } else {
-      if (!functions0 == functions1) {
-        print(paste(
-          "Functions' hashes do not match. If the changes were superficial,",
-          "update the hash. If they were not (or you do not know), rename the",
-          "output for ALL models and run them ALL again."
-        ))
+      if (!fun0 == fun1) {
+        message(
+          paste(
+            "Functions' to run the model (i.e., fun.a or fun.b) do not match.",
+            "If the changes were superficial, update the saved object. If they",
+            "were not (or you do not know), rename the output for ALL models",
+            "and run them ALL again."
+          )
+        )
       } else {
-        print(paste(
-          "Looks as though everything is the same. Unless something",
-          "is amiss, there is no reason to re-run this model."
-        ))
+        message(
+          paste(
+            "Looks as though everything is the same. Unless something",
+            "is amiss, there is no reason to re-run this model."
+          )
+        )
       }
     }
   }
@@ -137,16 +152,27 @@ if (run0) {
     }
   }
   saveRDS(params, file.path("output", paste0("params_", model, ".rds")))
-  saveRDS(functions1, file.path("output", "functions.rds"))
-}
-# Produce results if outputs exist (i.e., if it just ran or ran previously)
-if (!file.exists(file.path("output", paste0("params_", model, ".rds")))) {
+  saveRDS(fun1, file.path("output", "functions.rds"))
   
-  # Produce aggregate data -----------------------------------------------------
+  # Produce aggregate data
   print("Aggregated output")
   source(file.path("scripts", "output_s.R"))
   saveRDS(results, file.path("results", paste0(model, "_r.rds")))
   rm(results)
+}
+
+# Produce results --------------------------------------------------------------
+if (!exists("update_out")) {
+  # Can set in the simulation specific code to not run the following
+  update_out <- TRUE
+}
+
+# Only run if the model has run and if we want to update the results with the
+# latest.
+if (
+  file.exists(file.path("output", paste0("params_", model, ".rds"))) &
+  update_out
+) {
   
   # Produce model figures ------------------------------------------------------
   print("Time series plot")
@@ -161,7 +187,7 @@ if (!file.exists(file.path("output", paste0("params_", model, ".rds")))) {
     ggsave(
       file.path("plots", "Fig1.eps"),
       plots,
-      width = 6, height = 6, dpi = 450
+      width = 9, height = 6, dpi = 450
     )
   }
   print("Network and neigbours plot")
@@ -175,7 +201,7 @@ if (!file.exists(file.path("output", paste0("params_", model, ".rds")))) {
   if (model == "base") {
     ggsave(
       file.path("plots", "Fig2.eps"), plot = fig_network,
-      width = 6, height = 7, dpi = 450
+      width = 9, height = 10, dpi = 450
     )
     saveRDS(leg2, file.path("plots", "legend.rds"))
   }
@@ -185,8 +211,8 @@ if (!file.exists(file.path("output", paste0("params_", model, ".rds")))) {
       width = 6, height = 3, dpi = 450
     )
     ggsave2(
-      file.path("plots", "Fig8.esp"), plot = fig_gab_red,
-      width = 6, height = 3, dpi = 450
+      file.path("plots", "Fig8.eps"), plot = fig_gab_red,
+      width = 9, height = 4, dpi = 450
     )
   }
   print("Median neighbour plot")
