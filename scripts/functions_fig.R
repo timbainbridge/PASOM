@@ -20,7 +20,9 @@ sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
 # Functions to create figures ##################################################
 
 # For density plot -------------------------------------------------------------
-dens.fun <- function(i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE) {
+dens.fun <- function(
+  i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE, txt_s = 11
+) {
   p0 <- ggplot(i, aes(x = agent, y = neighbours)) +
     geom_density2d_filled(adjust = .5, bins = 20) +
     scale_fill_manual(
@@ -49,7 +51,7 @@ dens.fun <- function(i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE) {
       )
   }
   p1 <- p0 +
-    theme_bw() +
+    theme_bw(base_size = txt_s) +
     scale_x_continuous(limits = 0:1, expand = rep(0, 4)) +
     scale_y_continuous(limits = 0:1, expand = rep(0, 4)) +
     theme(
@@ -84,7 +86,9 @@ dens.fun <- function(i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE) {
   insert_xaxis_grob(p, p_xm, position = "top") |>
     insert_yaxis_grob(p_ym, position = "right")
 }
-dens.fun2 <- function(i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE) {
+dens.fun2 <- function(
+  i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE, txt_s = 11
+) {
   tmp0 <- sapply(
     adjacent_vertices(i$g, V(i$g)$name),
     function(x) i$opinion1[V(i$g) %in% x] |> mean()
@@ -98,7 +102,9 @@ dens.fun2 <- function(i, leg = FALSE, point = TRUE, alpha = 1, labs0 = TRUE) {
       labels = c("Anti-Science", "Neither", "Pro-Science")
     )
   )
-  dens.fun(tmp, leg = leg, point = point, alpha = alpha, labs0 = labs0)
+  dens.fun(
+    tmp, leg = leg, point = point, alpha = alpha, labs0 = labs0, txt_s = txt_s
+  )
 }
 
 # For network graph ------------------------------------------------------------
@@ -166,7 +172,7 @@ get_legend2 <- function(plot, legend = NULL) {
 # Used for manuscript boxplots (where grouping is the same by X)
 box_custom <- function(
     d, x, y, colour = NULL, xlab, clab = NULL, ylab, limits = waiver(),
-    pal = NULL
+    pal = NULL, txt_s = 9
 ) {
   mag <- 10^floor(log10(limits[2]))
   p <- ggplot(d, aes(x = {{x}}, y = {{y}}, colour = {{colour}})) +
@@ -179,7 +185,7 @@ box_custom <- function(
       limits = limits,
       expand = c(0, 0)
     ) +
-    theme_bw() +
+    theme_bw(base_size = txt_s) +
     scale_colour_manual(
       values = if (is.null(pal)) {
         paletteer_c(

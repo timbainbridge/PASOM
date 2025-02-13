@@ -247,5 +247,11 @@ ggsave2(
   file.path("plots", "op_box.png"), opbox_p_all,
   width = 4000, height = 3000, units = "px"
 )
-ggsave2(file.path("plots", "Fig5.eps"), ebox_p_all, width = 9, height = 9)
-ggsave2(file.path("plots", "Fig6.eps"), opbox_p_all, width = 9, height = 9)
+ggsave2(
+  file.path("plots", "Fig5.eps"), ebox_p_all,
+  width = 2250, height = 2250, units = "px", dpi = 300
+)
+ggsave2(
+  file.path("plots", "Fig6.eps"), opbox_p_all,
+  width = 2250, height = 2250, units = "px", dpi = 300
+)

@@ -53,7 +53,10 @@ p0 <- plot_grid(
           lapply(
             cx,
             function(x) {
-              textGrob(bquote(c["X"] == .(x)), gp = gpar(fontface = "bold"))
+              textGrob(
+                bquote(c["X"] == .(x)),
+                gp = gpar(fontface = "bold", fontsize = 9)
+              )
             }
           )
         ),
@@ -66,28 +69,45 @@ p0 <- plot_grid(
     )
   ),
   ncol = 1,
-  rel_heights = c(1, rep(9, length(bt)))
+  rel_heights = c(1.2, rep(9, length(bt)))
 ) |>
   # plot_grid(leg, rel_widths = c(15, 1))  # Here for when points were included.
-  plot_grid(textGrob("Agents' opinions"), nrow = 2, rel_heights = c(50, 1))
+  plot_grid(
+    textGrob("Agents' opinions", gp = gpar(fontsize = 9)),
+    nrow = 2,
+    rel_heights = c(50, 1.4)
+  )
 py <- plot_grid(
   plotlist = c(
     list(textGrob("")),
     lapply(
       bt,
-      function(x) textGrob(bquote(c["T"] == .(x)), gp = gpar(fontface = "bold"))
+      function(x) {
+        textGrob(
+          bquote(c["T"] == .(x)), gp = gpar(fontface = "bold", fontsize = 9)
+        )
+      }
     )
   ),
   ncol = 1,
-  rel_heights = c(1, rep(9, length(bt)))
+  rel_heights = c(1.4, rep(9, length(bt)))
 )
 p <- plot_grid(
-  py, textGrob("Average of neighbours' opinions", rot = 90), p0,
+  py,
+  textGrob(
+    "Average of neighbours' opinions",
+    rot = 90,
+    gp = gpar(fontsize = 9)
+  ),
+  p0,
   ncol = 3,
-  rel_widths = c(4, 1, 50)
+  rel_widths = c(4.5, 1, 50)
 )
 ggdraw(p)
 
 # Save -------------------------------------------------------------------------
 ggsave2(file.path("plots", "RQ2b_plot.png"), p, width = 13, height = 12)
-ggsave2(file.path("plots", "Fig7.eps"), width = 12, height = 11.1)
+ggsave2(
+  file.path("plots", "Fig7.eps"), p,
+  width = 2250, height = 2075, units = "px", dpi = 300
+)

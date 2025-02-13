@@ -21,6 +21,7 @@ sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
 
 # Load results -----------------------------------------------------------------
 results <- readRDS(file.path("results", paste0(model, "_r.rds")))
+txt_scale <- 8
 
 # Values at final round --------------------------------------------------
 echo1 <- results$echo$echo1 * 100  # as percentage
@@ -58,7 +59,7 @@ mplot <-
     expand = c(.02, .02)
   ) +
   labs(x = "Round", colour = "% agents in\nanti-science\nEC at\nfinal round") +
-  theme_bw()
+  theme_bw(base_size = txt_scale)
   
 mplot2 <-
   mplot +
@@ -99,7 +100,7 @@ e0plot <-
     expand = c(0, 0)
   ) +
   labs(x = "Round", colour = "Mean opinion\nat final round") +
-  theme_bw()
+  theme_bw(base_size = txt_scale)
   
 e0plot2 <-
   e0plot +
@@ -109,8 +110,7 @@ e0plot2 <-
     cbind(value = rowMeans(e0data0[, -ncol(e0data0)]), e0data0["round"]),
     colour = "black",
     linewidth = 2
-  ) #+
-  # ggtitle("(A)")
+  )
 
 # Pro-science
 e1data0 <- as.data.frame(echo1)
@@ -136,7 +136,7 @@ e1plot <-
     expand = c(0, 0)
   ) +
   labs(x = "Round", colour = "Mean opinion\nat final round") +
-  theme_bw()
+  theme_bw(base_size = txt_scale)
 
 e1plot2 <-
   e1plot +
@@ -146,8 +146,7 @@ e1plot2 <-
     cbind(value = rowMeans(e1data0[, -ncol(e1data0)]), e1data0["round"]),
     colour = "black",
     linewidth = 2
-  ) #+
-  # ggtitle("(B)")
+  )
 
 # Combined
 edata0 <- as.data.frame(echo0 + echo1)
@@ -173,7 +172,7 @@ eplot <-
     expand = c(0, 0)
   ) +
   labs(x = "Round", colour = "Mean opinion\nat final round") +
-  theme_bw()
+  theme_bw(base_size = txt_scale)
 
 eplot2 <-
   eplot +
@@ -183,14 +182,12 @@ eplot2 <-
     cbind(value = rowMeans(edata0[, -ncol(edata0)]), edata0["round"]),
     colour = "black",
     linewidth = 2
-  ) #+
-  # ggtitle("(C)")
+  )
 
 # Combined Mean and Echo plots -------------------------------------------------
 meplot <- plot_grid(
   plotlist = list(e0plot2, e1plot2, eplot2, mplot2),
   nrow = 2, ncol = 2,
-  # nrow = 4,
   labels = "AUTO"
 )
 

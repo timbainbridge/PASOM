@@ -187,7 +187,8 @@ if (
     ggsave(
       file.path("plots", "Fig1.eps"),
       plots,
-      width = 9, height = 6, dpi = 450
+      # width = 9, height = 6
+      width = 2250, height = 1500, units = "px", dpi = 300
     )
   }
   print("Network and neigbours plot")
@@ -201,7 +202,8 @@ if (
   if (model == "base") {
     ggsave(
       file.path("plots", "Fig2.eps"), plot = fig_network,
-      width = 9, height = 10, dpi = 450
+      # width = 9, height = 10
+      width = 2250, height = 2500, units = "px", dpi = 300
     )
     saveRDS(leg2, file.path("plots", "legend.rds"))
   }
@@ -212,7 +214,7 @@ if (
     )
     ggsave2(
       file.path("plots", "Fig8.eps"), plot = fig_gab_red,
-      width = 9, height = 4, dpi = 450
+      width = 2250, height = 1000, units = "px", dpi = 300
     )
   }
   print("Median neighbour plot")

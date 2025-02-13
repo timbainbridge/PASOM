@@ -45,4 +45,4 @@ rm(tmp)
 V(med$g)$color <- med$opinion1
 
 # Create figures ---------------------------------------------------------------
-fig_med <- dens.fun2(med, point = FALSE, labs0 = FALSE)
+fig_med <- dens.fun2(med, point = FALSE, labs0 = FALSE, txt_s = 8)

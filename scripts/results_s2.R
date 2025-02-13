@@ -26,6 +26,7 @@ source(file.path("scripts", "functions_fig.R"))
 
 # Load results -----------------------------------------------------------------
 results <- readRDS(file.path("results", paste0(model, "_r.rds")))
+txt_scale <- 8
 
 # Select simulations -----------------------------------------------------------
 mean_op0 <- results$opinion$mean
@@ -106,7 +107,10 @@ fig_network <- plot_grid(
     labels = c("A", "C", "E", "G")
   ),
   plot_grid(
-    dens.fun2(begin), dens.fun2(pros), dens.fun2(anti), dens.fun2(mixed),
+    dens.fun2(begin, txt_s = 4),
+    dens.fun2(pros, txt_s = 4),
+    dens.fun2(anti, txt_s = 4),
+    dens.fun2(mixed, txt_s = 4),
     ncol = 1,
     labels = c("B", "D", "F", "H")
   ),

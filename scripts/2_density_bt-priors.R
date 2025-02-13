@@ -41,9 +41,21 @@ p0 <- plot_grid(
   plotlist = c(
     list(
       plot_grid(
-        textGrob("Weak Priors", gp = gpar(fontface = "bold")),
-        textGrob("Moderate Priors", gp = gpar(fontface = "bold")),
-        textGrob("Strong Priors", gp = gpar(fontface = "bold")),
+        textGrob(
+          "Weak Priors",
+          gp = gpar(fontface = "bold", fontsize = 9),
+          just = "left"
+        ),
+        textGrob(
+          "Moderate Priors",
+          gp = gpar(fontface = "bold", fontsize = 9),
+          just = "left"
+        ),
+        textGrob(
+          "Strong Priors",
+          gp = gpar(fontface = "bold", fontsize = 9),
+          just = "left"
+        ),
         nrow = 1
       )
     ),
@@ -53,22 +65,36 @@ p0 <- plot_grid(
     )
   ),
   ncol = 1,
-  rel_heights = c(1, rep(10, length(bt)))
+  rel_heights = c(1.2, rep(10, length(bt)))
 ) |>
-  plot_grid(textGrob("Agents' opinions"), nrow = 2, rel_heights = c(50, 1))
+  plot_grid(
+    textGrob("Agents' opinions", gp = gpar(fontsize = 9)),
+    nrow = 2,
+    rel_heights = c(50, 1)
+  )
 py <- plot_grid(
   plotlist = c(
     list(textGrob("")),
     lapply(
       bt,
-      function(x) textGrob(bquote(c["T"] == .(x)), gp = gpar(fontface = "bold"))
+      function(x) {
+        textGrob(
+          bquote(c["T"] == .(x)), gp = gpar(fontface = "bold", fontsize = 9)
+        )
+      }
     )
   ),
   ncol = 1,
-  rel_heights = c(1, rep(10, length(bt)))
+  rel_heights = c(1.2, rep(10, length(bt)))
 )
 p <- plot_grid(
-  py, textGrob("Average of neighbours' opinions", rot = 90), p0,
+  py,
+  textGrob(
+    "Average of neighbours' opinions",
+    rot = 90,
+    gp = gpar(fontsize = 9)
+  ),
+  p0,
   ncol = 3,
   rel_widths = c(4.5, 1, 50)
 )
@@ -76,4 +102,7 @@ ggdraw(p)
 
 # Save -------------------------------------------------------------------------
 ggsave2(file.path("plots", "RQ2_plot.png"), p, width = 13, height = 16)
-ggsave2(file.path("plots", "Fig3.eps"), p, width = 10, height = 12)
+ggsave2(
+  file.path("plots", "Fig3.eps"), p,
+  width = 2250, height = 2625, units = "px", dpi = 300
+)

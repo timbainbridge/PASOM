@@ -41,9 +41,9 @@ p0 <- plot_grid(
   plotlist = c(
     list(
       plot_grid(
-        textGrob("Weak Priors", gp = gpar(fontface = "bold")),
-        textGrob("Moderate Priors", gp = gpar(fontface = "bold")),
-        textGrob("Strong Priors", gp = gpar(fontface = "bold")),
+        textGrob("Weak Priors", gp = gpar(fontface = "bold", fontsize = 9)),
+        textGrob("Moderate Priors", gp = gpar(fontface = "bold", fontsize = 9)),
+        textGrob("Strong Priors", gp = gpar(fontface = "bold", fontsize = 9)),
         nrow = 1
       )
     ),
@@ -53,28 +53,42 @@ p0 <- plot_grid(
     )
   ),
   ncol = 1,
-  rel_heights = c(1, rep(10, length(cx)))
+  rel_heights = c(1.2, rep(10, length(cx)))
 ) |>
   # plot_grid(leg, rel_widths = c(15, 1))  # Here for when points were included.
-  plot_grid(textGrob("Agents' opinions"), nrow = 2, rel_heights = c(50, 1))
+  plot_grid(
+    textGrob("Agents' opinions", gp = gpar(fontsize = 9)),
+    nrow = 2,
+    rel_heights = c(50, 1.4)
+  )
 py <- plot_grid(
   plotlist = c(
     list(textGrob("")),
     lapply(
       cx,
-      function(x) textGrob(bquote(c["X"] == .(x)), gp = gpar(fontface = "bold"))
+      function(x) {
+        textGrob(
+          bquote(c["X"] == .(x)), gp = gpar(fontface = "bold", fontsize = 9)
+        )
+      }
     )
   ),
   ncol = 1,
-  rel_heights = c(1, rep(10, length(cx)))
+  rel_heights = c(1.2, rep(10, length(cx)))
 )
 p <- plot_grid(
-  py, textGrob("Average of neighbours' opinions", rot = 90), p0,
+  py, textGrob(
+    "Average of neighbours' opinions", rot = 90, gp = gpar(fontsize = 9)
+  ),
+  p0,
   ncol = 3,
-  rel_widths = c(3, 1, 50)
+  rel_widths = c(3.2, 1, 50)
 )
 ggdraw(p)
 
 # Save -------------------------------------------------------------------------
 ggsave2(file.path("plots", "RQ2a_plot.png"), p, width = 13, height = 12)
-ggsave2(file.path("plots", "Fig4.eps"), p, width = 12, height = 10)
+ggsave2(
+  file.path("plots", "Fig4.eps"), p,
+  width = 2250, height = 1875, units = "px", dpi = 300
+)
