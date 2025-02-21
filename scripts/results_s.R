@@ -72,8 +72,7 @@ mplot2 <-
     ),
     colour = "black",
     linewidth = 2
-  ) #+
-  # ggtitle("(D)")
+  )
 
 # Echo chambers ----------------------------------------------------------------
 # Anti-science

@@ -51,9 +51,9 @@ eplot <-
   geom_point(position = position_jitter(width = .1, height = 0)) +
   scale_y_continuous(
     "Proportion of agents in an echo chamber / homophily",
-    0:5*.2,
-    0:4*.2+10,
-    limits = 0:1,
+    7:10*.1,
+    15:19*.05,
+    limits = c(0.7, 1),
     expand = c(0, 0.01)
   ) +
   # scale_colour_manual(

@@ -173,7 +173,6 @@ if (
   file.exists(file.path("output", paste0("params_", model, ".rds"))) &
   update_out
 ) {
-  
   # Produce model figures ------------------------------------------------------
   print("Time series plot")
   source(file.path("scripts", "results_s.R"))
@@ -187,7 +186,6 @@ if (
     ggsave(
       file.path("plots", "Fig1.eps"),
       plots,
-      # width = 9, height = 6
       width = 2250, height = 1500, units = "px", dpi = 300
     )
   }
@@ -202,7 +200,6 @@ if (
   if (model == "base") {
     ggsave(
       file.path("plots", "Fig2.eps"), plot = fig_network,
-      # width = 9, height = 10
       width = 2250, height = 2500, units = "px", dpi = 300
     )
     saveRDS(leg2, file.path("plots", "legend.rds"))

@@ -58,8 +58,7 @@ dens.fun <- function(
       legend.position = if (leg) "right" else "none",
       legend.key = element_rect(
         fill = paletteer_c("grDevices::Lajolla", 20, -1)[[2]]
-      ),
-      axis.title = element_text(size = 10)
+      )
     )
   if (labs0) {
     p <- p1 +

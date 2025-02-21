@@ -22,6 +22,7 @@ sapply(pkgs, function(x) library(x, character.only = TRUE)) |> invisible()
 # Create object directory (if it doesn't exist)
 if (!dir.exists("plots")) dir.create("plots")
 
+# Custom functions
 source(file.path("scripts", "functions_fig.R"))
 
 # Load results -----------------------------------------------------------------
@@ -107,16 +108,16 @@ fig_network <- plot_grid(
     labels = c("A", "C", "E", "G")
   ),
   plot_grid(
-    dens.fun2(begin, txt_s = 4),
-    dens.fun2(pros, txt_s = 4),
-    dens.fun2(anti, txt_s = 4),
-    dens.fun2(mixed, txt_s = 4),
+    dens.fun2(begin, txt_s = txt_scale),
+    dens.fun2(pros, txt_s = txt_scale),
+    dens.fun2(anti, txt_s = txt_scale),
+    dens.fun2(mixed, txt_s = txt_scale),
     ncol = 1,
     labels = c("B", "D", "F", "H")
   ),
   leg2,
   ncol = 4,
-  rel_widths = c(1, 6, 6, 2)
+  rel_widths = c(1.2, 6, 6, 2.3)
 )
 if (model == "bt_-0.5_stc_40") {
   fig_gab_red <- plot_grid(
