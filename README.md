@@ -53,6 +53,8 @@ To run the simulations, the `igraph`, `fastmatch`, and `openssl` packages are re
 
 Running models will create the `output` folder and and a folder for the simulation (named as the string assigned to `model`). The code will populate the folder with files for each of the simulation outputs. A file of the parameter values used for each of the simulations will be placed in the `output` folder. The text of functions used will also be created, which is used to check that the functions have not changed between runs. All files are saved with the `.rds` file type (with the exception of plots). The files can be opened in any program that can interpret R objects, such as R or RStudio.
 
+Alternatively, outputs can be found on CSIRO's Data Access Portal (Bainbridge, Tim; Ryan, Matt; Golley, Sinead; Kakoschke, Naomi; & Brindal, Emily (2025): PASOM: Toxic behaviour facilitates echo chamber formation. v1. CSIRO. Data Collection. https://doi.org/10.25919/hj39-0229).
+
 Within each folder numerous files will be saved for each parameter set, representing a single tracked output per file. Almost all files are lists of length equal to the number of simulation run. Some of these contain matrices of the number of agents x the number of rounds; others are only for the final round.
 
 Files with all rounds are:
