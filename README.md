@@ -1,6 +1,6 @@
 # ReadMe
 
-This depository contains the code to run PASOM--An agent-based model simulating science attitudes based on Spiral of Silence Theory. Outputs from the model simulations were used for the paper, “Toxic behaviour facilitates echo chamber formation: An agent-based modelling simulation of science attitudes based on Spiral of Silence Theory” submitted to Plos One.
+This depository contains the code to run PASOM--An agent-based model simulating science attitudes based on Spiral of Silence Theory. Outputs from the model simulations were used for the paper, “Toxic behaviour facilitates echo chamber formation: An agent-based modelling simulation of science attitudes based on Spiral of Silence Theory” accepted by Plos One. Outputs can be found at https://doi.org/10.25919/hj39-0229.
 
 ## Director Structure
 
